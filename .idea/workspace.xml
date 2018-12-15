@@ -2,22 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="976feb1b-5a03-49ad-af6f-17a888701902" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/bright-hotel.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/bright-hotel.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ScrollToTop.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/ScrollToTop.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/configureStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/configureStore.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/LandingPage/LandingPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/LandingPage/LandingPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/LandingPage/Sections/TeamSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/LandingPage/Sections/TeamSection.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/LoginPage/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/LoginPage/LoginPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/ProfilePage/ProfilePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/ProfilePage/ProfilePage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bright-hotel/Actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/bright-hotel/Actions/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bright-hotel/Components/Booking/BookingBox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/bright-hotel/Components/Booking/BookingBox.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bright-hotel/Components/Room/FeaturedRoomTypes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/bright-hotel/Components/Room/FeaturedRoomTypes.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bright-hotel/Components/SearchResult.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/bright-hotel/Components/SearchResult.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bright-hotel/Reducers/FormFieldMng.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/bright-hotel/Reducers/FormFieldMng.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bright-hotel/Utils/apiCall.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/bright-hotel/Utils/apiCall.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/index.jsx" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/node_modules/" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -30,14 +23,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/configureStore.js">
+        <entry file="file://$PROJECT_DIR$/src/bright-hotel/Components/Booking/BookingBox.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="34" lean-forward="true" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
+            <state relative-caret-position="285">
+              <caret line="255" column="51" selection-start-line="255" selection-start-column="51" selection-end-line="255" selection-end-column="51" />
               <folding>
-                <element signature="e#0#53#0" expanded="true" />
+                <element signature="e#0#26#0" expanded="true" />
+                <element signature="e#435#496#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -48,9 +42,17 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/configureStore.js" />
+        <option value="$PROJECT_DIR$/src/bright-hotel/Components/Booking/SelectField.jsx" />
+        <option value="$PROJECT_DIR$/src/bright-hotel/Components/Booking/BookingBox.jsx" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1805" />
-    <option name="y" value="13" />
+    <option name="y" value="23" />
     <option name="width" value="1440" />
     <option name="height" value="821" />
   </component>
@@ -59,6 +61,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -71,18 +74,49 @@
               <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="bright-hotel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="bright-hotel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
+              <item name="Components" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="bright-hotel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
+              <item name="Components" type="462c0819:PsiDirectoryNode" />
+              <item name="Booking" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="bright-hotel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="bright-hotel" type="462c0819:PsiDirectoryNode" />
+              <item name="Components" type="462c0819:PsiDirectoryNode" />
+              <item name="Room" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
     <property name="node.js.selected.package.eslint" value="$PROJECT_DIR$/node_modules/eslint" />
+    <property name="node.js.selected.package.standard" value="" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -113,24 +147,22 @@
       <option name="presentableId" value="Default" />
       <updated>1544847931579</updated>
       <workItem from="1544847934233" duration="11000" />
+      <workItem from="1544868662443" duration="413000" />
+      <workItem from="1544881130908" duration="983000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11000" />
+    <option name="totallyTimeSpent" value="1407000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1805" y="13" width="1440" height="821" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="821" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="npm" side_tool="true" />
-      <window_info id="Favorites" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24947146" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="npm" order="2" side_tool="true" />
+      <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -138,6 +170,10 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -149,10 +185,31 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/configureStore.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="34" lean-forward="true" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
+        <state relative-caret-position="119">
+          <caret line="7" column="40" lean-forward="true" selection-start-line="7" selection-start-column="40" selection-end-line="7" selection-end-column="40" />
           <folding>
             <element signature="e#0#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bright-hotel/Components/Booking/SelectField.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="18" column="36" selection-end-line="42" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bright-hotel/Components/Booking/BookingBox.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="255" column="51" selection-start-line="255" selection-start-column="51" selection-end-line="255" selection-end-column="51" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#435#496#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -8,10 +8,23 @@ import FeaturedRoomTypes from "./Room/FeaturedRoomTypes";
 import { connect } from "react-redux";
 import BookingBox from "./Booking/BookingBox";
 import Footer from "../../components/Footer/Footer";
+import { END_POINTS } from "../Utils/apiCall";
+import * as actions from "../../bright-hotel/Actions";
 
 class SearchResult extends React.Component {
+  componentDidMount() {
+    const { dispatch, bookingFields } = this.props;
+    if (bookingFields.isEmpty) {
+      this.props.history.push("/");
+    } else {
+      dispatch(
+        actions.getDataIfNeeded(END_POINTS.checkAvailable, bookingFields)
+      );
+    }
+  }
+
   render() {
-    const { classes } = this.props;
+    const { classes, bookingFields } = this.props;
     return (
       <div>
         <NavBar />
@@ -21,7 +34,10 @@ class SearchResult extends React.Component {
         />
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div className={classes.container}>
-            <FeaturedRoomTypes />
+            {bookingFields.isEmpty && <BookingBox />}
+            {!bookingFields.isEmpty && (
+              <FeaturedRoomTypes options={bookingFields} />
+            )}
           </div>
         </div>
         <Footer />

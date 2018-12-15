@@ -39,7 +39,13 @@ const styles = {
 class BookingBox extends React.Component {
   initialFields = () => {
     return {
-      ...this.props.bookingFields,
+      arrive: new Date(),
+      depart: moment(new Date())
+        .add(1, "day")
+        .toDate(),
+      numOfRooms: "1",
+      numOfAdults: "2",
+      numOfChildren: "0",
       snackbar: {
         open: false
       }
@@ -118,12 +124,12 @@ class BookingBox extends React.Component {
     }
   };
 
-  onArriveFieldChange = from => {
-    this.setState({ arrive: from });
+  onArriveFieldChange = arrive => {
+    this.setState({ arrive });
   };
 
   onDepartFieldChange = depart => {
-    this.setState({ depart: depart }, () => {
+    this.setState({ depart }, () => {
       this.showFromFieldMonth();
     });
   };

@@ -1,14 +1,7 @@
 import * as types from "../Utils/ActionTypes";
-import moment from "moment";
 
 const initialFields = {
-  arrive: new Date(),
-  depart: moment(new Date())
-    .add(1, "day")
-    .toDate(),
-  numOfRooms: "1",
-  numOfAdults: "2",
-  numOfChildren: "0"
+  isEmpty: true
 };
 
 const bookingFields = (state = initialFields, action) => {
@@ -16,7 +9,9 @@ const bookingFields = (state = initialFields, action) => {
 
   switch (type) {
     case types.CHANGE_FIELDS:
-      return Object.assign({}, state, fields);
+      return Object.assign({}, state, fields, {
+        isEmpty: false
+      });
     default:
       return state;
   }

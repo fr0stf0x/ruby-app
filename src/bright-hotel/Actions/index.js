@@ -1,10 +1,11 @@
 import * as types from "../Utils/ActionTypes";
 import { fetchDataFromServer } from "../Utils/apiCall";
 
-export function invalidate(endpoint) {
+export function invalidate(endpoint, error) {
   return {
     type: types.INVALIDATE_DATA,
-    endpoint
+    endpoint,
+    error
   };
 }
 
@@ -30,8 +31,7 @@ const fetchData = (endpoint, options) => dispatch => {
       dispatch(receiveData({ endpoint, data: res }));
     })
     .catch(err => {
-      console.log(err);
-      dispatch(invalidate(endpoint));
+      dispatch(invalidate(endpoint, err));
     });
 };
 
@@ -49,7 +49,6 @@ const shouldGetData = (state, endpoint) => {
 export function getDataIfNeeded(endpoint, options) {
   return (dispatch, getState) => {
     if (shouldGetData(getState(), endpoint)) {
-      console.log("fetching data");
       return dispatch(fetchData(endpoint, options));
     }
   };

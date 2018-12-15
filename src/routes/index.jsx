@@ -5,6 +5,7 @@ import BrightHotel from "../bright-hotel/Components/BrightHotel.jsx";
 import RoomList from "../bright-hotel/Components/RoomPage.jsx";
 import ServiceList from "../bright-hotel/Components/ServicePage.jsx";
 import SearchResult from "../bright-hotel/Components/SearchResult";
+import NotFoundPage from "../bright-hotel/Components/NotFoundPage";
 
 const indexRoutes = [
   { path: "/landing-page", name: "LandingPage", component: LandingPage },
@@ -13,7 +14,8 @@ const indexRoutes = [
   { path: "/", name: "BrightHotel", component: BrightHotel },
   { path: "/rooms", name: "RoomList", component: RoomList },
   { path: "/services", name: "ServiceList", component: ServiceList },
-  { path: `/search`, component: SearchResult }
+  { path: "/search", component: SearchResult },
+  { path: "/*", component: NotFoundPage }
 ];
 
 export default indexRoutes;

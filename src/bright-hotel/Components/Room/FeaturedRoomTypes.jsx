@@ -11,8 +11,8 @@ const styles = {};
 
 class FeaturedRoomTypes extends React.Component {
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(getDataIfNeeded(END_POINTS.roomTypes));
+    const { dispatch, options } = this.props;
+    dispatch(getDataIfNeeded(END_POINTS.roomTypes, options));
   }
 
   render() {
