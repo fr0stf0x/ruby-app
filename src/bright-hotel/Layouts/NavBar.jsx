@@ -5,7 +5,11 @@ import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/es/ListItem/ListItem";
 import { NavLink } from "react-router-dom";
 import Header from "../../components/Header/Header";
-import { HomeRounded, MeetingRoomRounded, RoomServiceRounded } from "@material-ui/icons";
+import {
+  HomeRounded,
+  MeetingRoomRounded,
+  RoomServiceRounded
+} from "@material-ui/icons";
 
 const RightLinks = withStyles(headerLinksStyle)(({ ...props }) => {
   const { classes } = props;
@@ -14,29 +18,33 @@ const RightLinks = withStyles(headerLinksStyle)(({ ...props }) => {
       <List className={classes.list}>
         <ListItem className={classes.listItem}>
           <NavLink
-            to='/home'
+            exact
+            to="/"
             className={classes.navLink}
             activeClassName={classes.navLinkActive}
           >
-            <HomeRounded/>Home
+            <HomeRounded />
+            Home
           </NavLink>
         </ListItem>
         <ListItem className={classes.listItem}>
           <NavLink
-            to='/rooms'
+            to="/rooms"
             className={classes.navLink}
             activeClassName={classes.navLinkActive}
           >
-            <MeetingRoomRounded/>Rooms
+            <MeetingRoomRounded />
+            Rooms
           </NavLink>
         </ListItem>
         <ListItem className={classes.listItem}>
           <NavLink
-            to='/services'
+            to="/services"
             className={classes.navLink}
             activeClassName={classes.navLinkActive}
           >
-            <RoomServiceRounded/>Services
+            <RoomServiceRounded />
+            Services
           </NavLink>
         </ListItem>
       </List>
@@ -54,10 +62,10 @@ class NavBar extends React.Component {
         <Header
           color="transparent"
           brand={Brand}
-          rightLinks={<RightLinks/>}
+          rightLinks={<RightLinks />}
           fixed
           changeColorOnScroll={{
-            height: 400,
+            height: 350,
             color: "white"
           }}
           {...rest}

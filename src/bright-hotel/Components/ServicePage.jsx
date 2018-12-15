@@ -25,27 +25,30 @@ class ServicePage extends React.Component {
     const { fetched } = this.state;
     return (
       <div>
-        <NavBar/>
+        <NavBar />
         <NavHeader
           image={require("assets/img/bright-hotel/bg_3.jpg")}
           title={"Facilities & Service"}
         />
         <div className={classNames(classes.main, classes.mainRaised)}>
-          <div className={classes.container} align="center">
-            <FeaturedServices/>
-            {fetched ?
-              <AllServices/> :
-              <Button
-                size="lg"
-                color="info"
-                onClick={this.toggleGetAllServices}
-              >
-                See all
-              </Button>
-            }
+          <div className={classes.container}>
+            <FeaturedServices />
+            {fetched ? (
+              <AllServices />
+            ) : (
+              <div align="center">
+                <Button
+                  size="lg"
+                  color="info"
+                  onClick={this.toggleGetAllServices}
+                >
+                  See all
+                </Button>
+              </div>
+            )}
           </div>
         </div>
-        <Footer/>
+        <Footer />
       </div>
     );
   }

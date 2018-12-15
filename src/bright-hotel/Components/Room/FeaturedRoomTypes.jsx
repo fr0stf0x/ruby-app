@@ -1,59 +1,53 @@
-import GridContainer from "../../../components/Grid/GridContainer";
-import GridItem from "../../../components/Grid/GridItem";
-import Zoom from "@material-ui/core/es/Zoom/Zoom";
+import Zoom from "@material-ui/core/Zoom/Zoom";
 import React from "react";
-import productStyle from "../../../assets/jss/material-kit-react/views/landingPageSections/productStyle";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import FeaturedRoomCard from "./FeaturedRoomCard";
-import { API_URL } from "../../Utils/apiCall";
+import { connect } from "react-redux";
+import { getDataIfNeeded } from "../../Actions";
+import { END_POINTS } from "../../Utils/apiCall";
+import Grid from "@material-ui/core/Grid";
+
+const styles = {};
 
 class FeaturedRoomTypes extends React.Component {
-
-  state = {
-    roomTypes: []
-  };
-
   componentDidMount() {
-    this.getFeaturedRooms();
+    const { dispatch } = this.props;
+    dispatch(getDataIfNeeded(END_POINTS.roomTypes));
   }
 
-  getFeaturedRooms = () => {
-    fetch(`${API_URL}/roomTypes`)
-      .then(res => res.json())
-      .then(res => res.slice(0, 4))
-      .then(res => {
-        this.setState({
-          roomTypes: res
-        });
-      });
-  };
-
   render() {
-    const { classes } = this.props;
-    const { roomTypes } = this.state;
+    const { items, isFetching } = this.props;
     return (
       <div>
-        <div className={classes.section} align="center">
-          <GridContainer>
-            <GridItem>
-              <h2 className={classes.title}>Featured Rooms</h2>
-            </GridItem>
-            {roomTypes.map((roomType, key) => (
-              <GridItem xs={12} key={key}>
-                <Zoom in>
-                  <FeaturedRoomCard
-                    roomType={roomType}
-                    direction={key % 2 ? "row" : "row-reverse"}
-                  />
-                </Zoom>
-              </GridItem>
-            ))}
-          </GridContainer>
-        </div>
+        {isFetching && <h2 align="center">Loading...</h2>}
+        {!isFetching &&
+          Array.isArray(items) &&
+          items.length > 0 && (
+            <Grid container spacing={16}>
+              {items.map((roomType, key) => (
+                <Grid item xs={12} key={key}>
+                  <Zoom in>
+                    <FeaturedRoomCard
+                      roomType={roomType}
+                      direction={key % 2 ? "row-reverse" : "row"}
+                    />
+                  </Zoom>
+                </Grid>
+              ))}
+            </Grid>
+          )}
       </div>
     );
   }
-
 }
 
-export default withStyles(productStyle)(FeaturedRoomTypes);
+const mapStateToProps = state => {
+  const { roomTypes } = state.server;
+  const { isFetching, items } = roomTypes || {
+    isFetching: true,
+    items: []
+  };
+  return { isFetching, items };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(FeaturedRoomTypes));

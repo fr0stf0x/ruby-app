@@ -23,9 +23,7 @@ const ServiceCard = ({ classes, service }) => {
         <h4 className={classes.cardTitle}>
           {service.name}, {service.serviceType}
         </h4>
-        <h4>
-          {service.descr}
-        </h4>
+        <h4>{service.descr}</h4>
         <Button size="sm" color="primary">
           Share
         </Button>

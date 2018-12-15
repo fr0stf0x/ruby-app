@@ -14,7 +14,8 @@ export const navHeaderStyles = {
     marginTop: "30px",
     minHeight: "32px",
     color: "#FFFFFF",
-    textDecoration: "none"
+    textDecoration: "none",
+    letterSpacing: "3px"
   },
   container: {
     ...container,
@@ -22,15 +23,17 @@ export const navHeaderStyles = {
   }
 };
 
-const NavHeader = (props) => {
+const NavHeader = props => {
   const { classes, title, image, subtitle, content } = props;
   return (
     <Parallax filter image={image}>
       <div className={classes.container}>
         <GridContainer>
           <GridItem xs={12} sm={12} md={6}>
-            <h1 className={classes.title}>{title}</h1>
-            <h2>{subtitle}</h2>
+            <h1 id="page-title" className={classes.title}>
+              {title}
+            </h1>
+            <h3 style={{ color: "white" }}>{subtitle}</h3>
             {content}
           </GridItem>
         </GridContainer>

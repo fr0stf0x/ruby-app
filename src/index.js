@@ -7,18 +7,24 @@ import indexRoutes from "routes/index.jsx";
 
 import "assets/scss/material-kit-react.css?v=1.3.0";
 import ScrollToTop from "./ScrollToTop";
+import { Provider } from "react-redux";
+import configureStore from "./configureStore";
+
+const  store = configureStore();
 
 const hist = createBrowserHistory();
 
 ReactDOM.render(
-  <Router history={hist}>
-    <ScrollToTop>
-      <Switch>
-        {indexRoutes.map((prop, key) => {
-          return <Route path={prop.path} exact key={key} component={prop.component}/>;
-        })}
-      </Switch>
-    </ScrollToTop>
-  </Router>,
+  <Provider store={store}>
+    <Router history={hist}>
+      <ScrollToTop>
+        <Switch>
+          {indexRoutes.map((prop, key) => {
+            return <Route path={prop.path} exact key={key} component={prop.component}/>;
+          })}
+        </Switch>
+      </ScrollToTop>
+    </Router>
+    </Provider>,
   document.getElementById("root")
 );

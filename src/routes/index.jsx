@@ -10,10 +10,10 @@ const indexRoutes = [
   { path: "/landing-page", name: "LandingPage", component: LandingPage },
   { path: "/profile-page", name: "ProfilePage", component: ProfilePage },
   { path: "/login-page", name: "LoginPage", component: LoginPage },
-  { path: "/home", name: "BrightHotel", component: BrightHotel },
+  { path: "/", name: "BrightHotel", component: BrightHotel },
   { path: "/rooms", name: "RoomList", component: RoomList },
   { path: "/services", name: "ServiceList", component: ServiceList },
-  { path: `/search`, component: SearchResult}
+  { path: `/search`, component: SearchResult }
 ];
 
 export default indexRoutes;

@@ -8,7 +8,6 @@ import withStyles from "@material-ui/core/es/styles/withStyles";
 import { API_URL } from "../../Utils/apiCall";
 
 class AllServices extends React.Component {
-
   state = {
     services: []
   };
@@ -39,7 +38,7 @@ class AllServices extends React.Component {
           {services.map((service, key) => (
             <GridItem key={key} xs={12} md={6} lg={4} xl={2}>
               <Zoom in>
-                <ServiceCard service={service}/>
+                <ServiceCard service={service} />
               </Zoom>
             </GridItem>
           ))}
