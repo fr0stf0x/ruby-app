@@ -31,7 +31,7 @@ class LandingPage extends React.Component {
           color="transparent"
           routes={dashboardRoutes}
           brand="Material Kit React"
-          rightLinks={<HeaderLinks/>}
+          rightLinks={<HeaderLinks />}
           fixed
           changeColorOnScroll={{
             height: 400,
@@ -50,7 +50,7 @@ class LandingPage extends React.Component {
                   the information that can make you or your product create the
                   first impression.
                 </h4>
-                <br/>
+                <br />
                 <Button
                   color="danger"
                   size="lg"
@@ -58,7 +58,8 @@ class LandingPage extends React.Component {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fas fa-play"/>Watch video
+                  <i className="fas fa-play" />
+                  Watch video
                 </Button>
               </GridItem>
             </GridContainer>
@@ -66,12 +67,12 @@ class LandingPage extends React.Component {
         </Parallax>
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div className={classes.container}>
-            <ProductSection/>
-            <TeamSection/>
-            <WorkSection/>
+            <ProductSection />
+            <TeamSection />
+            <WorkSection />
           </div>
         </div>
-        <Footer/>
+        <Footer />
       </div>
     );
   }

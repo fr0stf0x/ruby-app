@@ -46,7 +46,7 @@ class ProfilePage extends React.Component {
         <Header
           color="transparent"
           brand="Material Kit React"
-          rightLinks={<HeaderLinks/>}
+          rightLinks={<HeaderLinks />}
           fixed
           changeColorOnScroll={{
             height: 200,
@@ -54,7 +54,7 @@ class ProfilePage extends React.Component {
           }}
           {...rest}
         />
-        <Parallax small filter image={require("assets/img/profile-bg.jpg")}/>
+        <Parallax small filter image={require("assets/img/profile-bg.jpg")} />
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div>
             <div className={classes.container}>
@@ -62,19 +62,19 @@ class ProfilePage extends React.Component {
                 <GridItem xs={12} sm={12} md={6}>
                   <div className={classes.profile}>
                     <div>
-                      <img src={profile} alt="..." className={imageClasses}/>
+                      <img src={profile} alt="..." className={imageClasses} />
                     </div>
                     <div className={classes.name}>
                       <h3 className={classes.title}>Christian Louboutin</h3>
                       <h6>DESIGNER</h6>
                       <Button justIcon link className={classes.margin5}>
-                        <i className={"fab fa-twitter"}/>
+                        <i className={"fab fa-twitter"} />
                       </Button>
                       <Button justIcon link className={classes.margin5}>
-                        <i className={"fab fa-instagram"}/>
+                        <i className={"fab fa-instagram"} />
                       </Button>
                       <Button justIcon link className={classes.margin5}>
-                        <i className={"fab fa-facebook"}/>
+                        <i className={"fab fa-facebook"} />
                       </Button>
                     </div>
                   </div>
@@ -207,7 +207,7 @@ class ProfilePage extends React.Component {
             </div>
           </div>
         </div>
-        <Footer/>
+        <Footer />
       </div>
     );
   }

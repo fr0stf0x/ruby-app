@@ -5,13 +5,12 @@ import { createLogger } from "redux-logger";
 
 const logger = createLogger();
 
-const configureStore = (preloadedState) => {
+const configureStore = preloadedState => {
   return createStore(
     BrightHotelApp,
     preloadedState,
     applyMiddleware(thunk, logger)
   );
 };
-
 
 export default configureStore;

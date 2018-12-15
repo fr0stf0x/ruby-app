@@ -8,7 +8,6 @@ import NavHeader from "../Layouts/NavHeader";
 import NavBar from "../Layouts/NavBar";
 import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import PropTypes from "prop-types";
 
 const HeaderButton = () => (
   <Button

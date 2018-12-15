@@ -8,7 +8,6 @@ import withStyles from "@material-ui/core/es/styles/withStyles";
 import { API_URL } from "../../Utils/apiCall";
 
 class AllRoomTypes extends React.Component {
-
   state = {
     rooms: []
   };
@@ -40,7 +39,7 @@ class AllRoomTypes extends React.Component {
             {rooms.map((room, key) => (
               <GridItem key={key} xs={12} md={6} lg={4} xl={2}>
                 <Zoom in>
-                  <RoomCard room={room}/>
+                  <RoomCard room={room} />
                 </Zoom>
               </GridItem>
             ))}

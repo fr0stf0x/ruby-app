@@ -10,7 +10,7 @@ import ScrollToTop from "./ScrollToTop";
 import { Provider } from "react-redux";
 import configureStore from "./configureStore";
 
-const  store = configureStore();
+const store = configureStore();
 
 const hist = createBrowserHistory();
 
@@ -20,11 +20,18 @@ ReactDOM.render(
       <ScrollToTop>
         <Switch>
           {indexRoutes.map((prop, key) => {
-            return <Route path={prop.path} exact key={key} component={prop.component}/>;
+            return (
+              <Route
+                path={prop.path}
+                exact
+                key={key}
+                component={prop.component}
+              />
+            );
           })}
         </Switch>
       </ScrollToTop>
     </Router>
-    </Provider>,
+  </Provider>,
   document.getElementById("root")
 );

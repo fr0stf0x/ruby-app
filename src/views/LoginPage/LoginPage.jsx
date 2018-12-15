@@ -50,7 +50,7 @@ class LoginPage extends React.Component {
           absolute
           color="transparent"
           brand="Material Kit React"
-          rightLinks={<HeaderLinks/>}
+          rightLinks={<HeaderLinks />}
           {...rest}
         />
         <div
@@ -76,7 +76,7 @@ class LoginPage extends React.Component {
                           color="transparent"
                           onClick={e => e.preventDefault()}
                         >
-                          <i className={"fab fa-twitter"}/>
+                          <i className={"fab fa-twitter"} />
                         </Button>
                         <Button
                           justIcon
@@ -85,7 +85,7 @@ class LoginPage extends React.Component {
                           color="transparent"
                           onClick={e => e.preventDefault()}
                         >
-                          <i className={"fab fa-facebook"}/>
+                          <i className={"fab fa-facebook"} />
                         </Button>
                         <Button
                           justIcon
@@ -94,7 +94,7 @@ class LoginPage extends React.Component {
                           color="transparent"
                           onClick={e => e.preventDefault()}
                         >
-                          <i className={"fab fa-google-plus-g"}/>
+                          <i className={"fab fa-google-plus-g"} />
                         </Button>
                       </div>
                     </CardHeader>
@@ -110,7 +110,7 @@ class LoginPage extends React.Component {
                           type: "text",
                           endAdornment: (
                             <InputAdornment position="end">
-                              <People className={classes.inputIconsColor}/>
+                              <People className={classes.inputIconsColor} />
                             </InputAdornment>
                           )
                         }}
@@ -125,7 +125,7 @@ class LoginPage extends React.Component {
                           type: "email",
                           endAdornment: (
                             <InputAdornment position="end">
-                              <Email className={classes.inputIconsColor}/>
+                              <Email className={classes.inputIconsColor} />
                             </InputAdornment>
                           )
                         }}
@@ -158,7 +158,7 @@ class LoginPage extends React.Component {
               </GridItem>
             </GridContainer>
           </div>
-          <Footer whiteFont/>
+          <Footer whiteFont />
         </div>
       </div>
     );
