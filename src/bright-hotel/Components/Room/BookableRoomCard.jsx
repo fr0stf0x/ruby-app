@@ -1,18 +1,19 @@
 import React from "react";
 import RoomCard from "./RoomCard";
 import { connect } from "react-redux";
-import actions from "../../Actions/actions";
 import RoomDetailDialog from "./RoomDetailDialog";
 import history from "../../../history";
+import { selectRoomTypeById } from "../../Reducers/selectors";
 
 class BookableRoomCard extends React.Component {
+  state = {
+    fullScreen: false
+  };
+
   toggleDialog = () => {
-    this.props.dispatch(
-      actions.rooms.toggleRoomDetailDialog(
-        this.props.type,
-        this.props.roomType.id
-      )
-    );
+    this.setState({
+      fullScreen: !this.state.fullScreen
+    });
   };
 
   bookHandler = () => {
@@ -24,9 +25,10 @@ class BookableRoomCard extends React.Component {
     return (
       <div>
         <RoomDetailDialog
-          toggleDialog={this.toggleDialog}
+          open={this.state.fullScreen}
           roomType={roomType}
           direction={direction}
+          toggleDialog={this.toggleDialog}
           bookHandler={this.bookHandler}
         />
         <RoomCard
@@ -40,4 +42,8 @@ class BookableRoomCard extends React.Component {
   }
 }
 
-export default connect(() => ({}))(BookableRoomCard);
+export default connect((state, props) => {
+  return {
+    roomType: selectRoomTypeById(state, props)
+  };
+})(BookableRoomCard);

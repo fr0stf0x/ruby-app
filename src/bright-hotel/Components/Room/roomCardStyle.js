@@ -44,6 +44,15 @@ const styles = theme => ({
     },
     lineHeight: "1.6"
   },
+  marginHorizontal: {
+    [theme.breakpoints.down("sm")]: {
+      margin: "0 5px"
+    },
+    [theme.breakpoints.up("sm")]: {
+      margin: "0 10px"
+    },
+    lineHeight: "1.6"
+  },
   textBox: {
     padding: "1rem 2em"
   },
@@ -64,7 +73,7 @@ const styles = theme => ({
     lineHeight: "1.6",
     fontWeight: "400",
     fontSize: "18px",
-    textOverflow: "ellipsis",
+    textOverflow: "ellipsis"
   },
   description: {
     color: "#817a6b",

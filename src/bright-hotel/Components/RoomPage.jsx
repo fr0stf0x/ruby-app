@@ -1,17 +1,12 @@
-import React, { Suspense } from "react";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import Footer from "../../components/Footer/Footer";
-import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
 import classNames from "classnames";
-import NavHeader from "../Layouts/NavHeader";
+import React, { Suspense } from "react";
+import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
+import Footer from "../../components/Footer/Footer";
 import NavBar from "../Layouts/NavBar";
-import { END_POINTS } from "../Utils/apiCall";
+import NavHeader from "../Layouts/NavHeader";
 
 class RoomPage extends React.Component {
-  state = {
-    fetched: false
-  };
-
   render() {
     const { classes } = this.props;
     const RoomTypes = React.lazy(() => import("./Room/RoomTypes"));
@@ -25,7 +20,7 @@ class RoomPage extends React.Component {
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div className={classes.container}>
             <Suspense fallback={<div>Loading</div>}>
-              <RoomTypes type={END_POINTS.allRoomTypes} />
+              <RoomTypes />
             </Suspense>
           </div>
         </div>

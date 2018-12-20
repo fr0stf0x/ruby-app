@@ -1,5 +1,13 @@
-export const selectRoomTypes = state => state.roomTypes;
+import END_POINTS, { mapEndpoint } from "../Utils/api";
 
-export const selectHotels = state => state.state.hotels;
+export const selectRoomTypes = state =>
+  state.data[mapEndpoint(END_POINTS.ALL_ROOM_TYPES)];
 
-export const selectRooms = state => state.rooms;
+export const selectRoomTypeById = (state, props) =>
+  selectRoomTypes(state).items.byId[props.id];
+
+export const selectHotels = state =>
+  state.server[mapEndpoint(END_POINTS.HOTELS)];
+
+// export const selectAvailabilityById = (state, roomTypeId) =>
+//   selectRoomTypeById(state, roomTypeId).availableIn;

@@ -12,11 +12,12 @@ const RoomDetailDialog = props => {
     direction = "row",
     classes,
     toggleDialog,
-    bookHandler
+    bookHandler,
+    open
   } = props;
   return (
     <div>
-      <Dialog fullScreen open={roomType.dialogOpen} onClose={toggleDialog}>
+      <Dialog fullScreen open={open} onClose={toggleDialog}>
         <DialogContent>
           <RoomCard
             fullScreen

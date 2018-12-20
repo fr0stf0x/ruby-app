@@ -1,3 +1,7 @@
+import fetch from "cross-fetch";
+import { stringify } from "query-string";
+import { API_URL } from "./api";
+
 export const formatMoney = money =>
   (+money / 23000).toFixed(1).replace(/\d(?=(\d{3})+\.)/g, "$&,");
 
@@ -22,4 +26,16 @@ export const mergeItemInArray = (array, itemId, callback) => {
     }
     return callback(item);
   });
+};
+
+export const fetchDataFromServer = (
+  endpoint,
+  params,
+  options = { limit: 10 }
+) => {
+  let url = `${API_URL}/${endpoint}?${stringify(params)}&${stringify(options)}`;
+  console.log("url", url);
+  return fetch(url)
+    .then(res => res.json())
+    .catch(err => console.log(err));
 };

@@ -7,7 +7,7 @@ import NavHeader from "../Layouts/NavHeader";
 import NavBar from "../Layouts/NavBar";
 import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import { END_POINTS } from "../Utils/apiCall";
+import END_POINTS from "../Utils/api";
 import actions from "../Actions/actions";
 import { connect } from "react-redux";
 
@@ -27,7 +27,7 @@ const HeaderButton = () => (
 class BrightHotel extends React.Component {
   componentDidMount() {
     this.props.dispatch(
-      actions.server.getDataIfNeeded(END_POINTS.allRoomTypes)
+      actions.server.getDataIfNeeded(END_POINTS.ALL_ROOM_TYPES)
     );
   }
 

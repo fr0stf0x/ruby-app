@@ -4,12 +4,11 @@ import moment from "moment";
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
-import actions from "../Actions/actions";
 import Footer from "../../components/Footer/Footer";
+import actions from "../Actions/actions";
 import NavBar from "../Layouts/NavBar";
 import NavHeader from "../Layouts/NavHeader";
 import RoomTypes from "./Room/RoomTypes";
-import { END_POINTS } from "../Utils/apiCall";
 
 class SearchResult extends React.Component {
   componentDidMount() {
@@ -38,7 +37,7 @@ class SearchResult extends React.Component {
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div className={classes.container}>
             <Suspense fallback={<div>Loading</div>}>
-              <RoomTypes type={END_POINTS.availableRooms} />
+              <RoomTypes />
             </Suspense>
           </div>
         </div>

@@ -5,7 +5,7 @@ import GridContainer from "../../../components/Grid/GridContainer";
 import ServiceCard from "./ServiceCard";
 import productStyle from "../../../assets/jss/material-kit-react/views/landingPageSections/productStyle";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import { API_URL } from "../../Utils/apiCall";
+import { API_URL } from "../../Utils/api";
 
 class AllServices extends React.Component {
   state = {

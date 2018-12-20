@@ -1,5 +1,6 @@
 import types from "./types";
-import { END_POINTS, fetchDataFromServer } from "../Utils/apiCall";
+import END_POINTS, { mapEndpoint } from "../Utils/api";
+import { fetchDataFromServer } from "../Utils/utils";
 
 // fields
 const changeFields = fields => {
@@ -16,6 +17,7 @@ const shouldChangeFields = (state, fields) => {
 const changeFieldsIfNeeded = fields => (dispatch, getState) => {
   if (shouldChangeFields(getState(), fields)) {
     dispatch(changeFields(fields));
+    dispatch(invalidateData(END_POINTS.CHECK_AVAILABLE));
   }
 };
 
@@ -23,7 +25,7 @@ const changeFieldsIfNeeded = fields => (dispatch, getState) => {
 function invalidateData(endpoint, error) {
   return {
     type: types.INVALIDATE_DATA,
-    endpoint,
+    endpoint: mapEndpoint(endpoint),
     error
   };
 }
@@ -31,36 +33,34 @@ function invalidateData(endpoint, error) {
 const requestData = endpoint => {
   return {
     type: types.REQUEST_DATA,
-    endpoint
+    endpoint: mapEndpoint(endpoint)
   };
 };
 
 const receiveData = ({ endpoint, data }) => {
   return {
     type: types.RECEIVE_DATA,
-    endpoint,
-    data
+    endpoint: mapEndpoint(endpoint),
+    data: mapDataWithId(data)
   };
+  // return {
+  //   type: mapEndpointToActionType(endpoint),
+  //   data: mapDataWithId(data)
+  // };
 };
 
-const mapEndpointToActionType = endpoint => {
-  switch (endpoint) {
-    case "hotels":
-      return types.RECEIVE_DATA_HOTELS;
-    case "rooms":
-      return types.RECEIVE_DATA_ROOMS;
-    case "bookings/checkAvailable":
-      return types.RECEIVE_DATA_ROOMTYPES;
-    default:
-      return types.RECEIVE_DATA_ROOMTYPES;
-  }
-};
+const mapDataWithId = data => ({
+  byId: data.reduce((obj, item) => {
+    obj[item.id] = item;
+    return obj;
+  }, {}),
+  allIds: data.map(item => item.id)
+});
 
 const fetchData = (endpoint, options) => dispatch => {
   dispatch(requestData(endpoint));
   return fetchDataFromServer(endpoint, options)
     .then(res => {
-      console.log("res", res);
       dispatch(receiveData({ endpoint, data: res }));
     })
     .catch(err => {
@@ -69,7 +69,7 @@ const fetchData = (endpoint, options) => dispatch => {
 };
 
 const shouldGetData = (state, endpoint) => {
-  const data = state[endpoint];
+  const data = state.data[mapEndpoint(endpoint)];
   if (!data) {
     return true;
   } else if (data.isFetching) {
@@ -79,19 +79,21 @@ const shouldGetData = (state, endpoint) => {
   }
 };
 
-function getDataIfNeeded(endpoint, options) {
+const getDataIfNeeded = (endpoint, options) => {
   return (dispatch, getState) => {
     if (shouldGetData(getState(), endpoint)) {
       return dispatch(fetchData(endpoint, options));
     }
   };
-}
+};
 
-function checkForRoomsAvailability(bookingFields) {
-  return dispatch => {
-    return dispatch(fetchData(END_POINTS.availableRooms, bookingFields));
+const checkForRoomsAvailability = bookingFields => {
+  return (dispatch, getState) => {
+    if (shouldGetData(getState(), END_POINTS.CHECK_AVAILABLE)) {
+      return dispatch(fetchData(END_POINTS.CHECK_AVAILABLE, bookingFields));
+    }
   };
-}
+};
 
 // cart
 
@@ -109,10 +111,9 @@ const addServiceToCart = serviceId => {
   };
 };
 
-const toggleRoomDetailDialog = (endpoint, id) => {
+const toggleRoomDetailDialog = id => {
   return {
     type: types.TOGGLE_SHOW_DATA,
-    endpoint,
     id
   };
 };

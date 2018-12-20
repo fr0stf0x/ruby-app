@@ -1,15 +1,17 @@
-import { applyMiddleware, createStore } from "redux";
+import { applyMiddleware, createStore, compose } from "redux";
 import BrightHotelApp from "./bright-hotel/Reducers";
 import thunk from "redux-thunk";
 import { createLogger } from "redux-logger";
 
 const logger = createLogger();
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const configureStore = preloadedState => {
   return createStore(
     BrightHotelApp,
     preloadedState,
-    applyMiddleware(thunk, logger)
+    composeEnhancers(applyMiddleware(thunk, logger))
   );
 };
 

@@ -97,7 +97,10 @@ const RoomCard = props => {
               </div>
               <div className={classes.marginVertical}>
                 <Button
-                  className={classes.letterSpacing}
+                  className={classNames(
+                    classes.letterSpacing,
+                    classes.marginHorizontal
+                  )}
                   variant={"contained"}
                   color={"secondary"}
                   size={"large"}

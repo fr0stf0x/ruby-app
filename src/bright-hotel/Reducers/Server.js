@@ -18,21 +18,19 @@ const endpoint = (
   state = {
     isFetching: false,
     didInvalidate: false,
-    items: []
+    items: {}
   },
   action
 ) => {
   switch (action.type) {
     case types.INVALIDATE_DATA:
-      return invalidateData(state, action);
+      return invalidateData(state);
     case types.REQUEST_DATA:
-      return requestData(state, action);
+      return requestData(state);
     case types.RECEIVE_DATA:
       return receiveData(state, action);
-    case types.TOGGLE_SHOW_DATA:
-      return mergeObj(state, {
-        items: toggleFullScreen(state.items, action)
-      });
+    default:
+      return state;
   }
 };
 
@@ -62,10 +60,6 @@ const server = (state = {}, action) => {
     case types.INVALIDATE_DATA:
     case types.REQUEST_DATA:
     case types.RECEIVE_DATA:
-      return mergeObj(state, {
-        [action.endpoint]: endpoint(state[action.endpoint], action)
-      });
-    case types.TOGGLE_SHOW_DATA:
       return mergeObj(state, {
         [action.endpoint]: endpoint(state[action.endpoint], action)
       });
