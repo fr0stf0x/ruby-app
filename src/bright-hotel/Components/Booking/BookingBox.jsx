@@ -1,23 +1,24 @@
-import React from "react";
-import Grid from "@material-ui/core/Grid";
-import withStyles from "@material-ui/core/es/styles/withStyles";
 import Button from "@material-ui/core/Button/Button";
-import moment from "moment";
-import { Helmet } from "react-helmet";
+import withStyles from "@material-ui/core/es/styles/withStyles";
 import FormControl from "@material-ui/core/FormControl";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
 import Input from "@material-ui/core/Input";
 import NativeSelect from "@material-ui/core/NativeSelect";
+import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
+import moment from "moment";
+import React from "react";
 // date selector
 import DayPickerInput from "react-day-picker/DayPickerInput";
-import { formatDate, parseDate } from "react-day-picker/moment";
 import "react-day-picker/lib/style.css";
-import productStyle from "../../../assets/jss/material-kit-react/views/landingPageSections/productStyle";
-import { withRouter } from "react-router-dom";
+import { formatDate, parseDate } from "react-day-picker/moment";
+import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
-import * as actions from "../../Actions";
-import Snackbar from "@material-ui/core/Snackbar/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
+import { withRouter } from "react-router-dom";
+import actions from "../../Actions/actions";
+import Zoom from "@material-ui/core/Zoom";
+import productStyle from "../../../assets/jss/material-kit-react/views/landingPageSections/productStyle";
 
 const styles = {
   ...productStyle,
@@ -31,43 +32,55 @@ const styles = {
   formControl: {
     minWidth: "80% !important"
   },
+
   dateSelectField: {
     width: "100%"
   }
 };
 
 class BookingBox extends React.Component {
-  initialFields = () => {
-    return {
-      arrive: new Date(),
-      depart: moment(new Date())
+  initialFields = () => ({
+    fields: this.props.bookingFields.fields || {
+      arrive: moment(new Date())
         .add(1, "day")
         .toDate(),
-      numOfRooms: "1",
+      depart: moment(new Date())
+        .add(2, "day")
+        .toDate(),
       numOfAdults: "2",
-      numOfChildren: "0",
-      snackbar: {
-        open: false
-      }
-    };
-  };
+      numOfChildren: "0"
+    },
+    snackbar: {
+      open: false
+    }
+  });
+
+  componentWillUnmount() {
+    this.props.dispatch(
+      actions.bookingFields.changeFieldsIfNeeded(this.state.fields)
+    );
+  }
 
   state = this.initialFields();
 
   checkAvailability = () => {
-    const { dispatch } = this.props;
     if (this.validateFields()) {
-      dispatch(actions.changeFields(this.state));
+      this.props.dispatch(
+        actions.bookingFields.changeFieldsIfNeeded(this.state.fields)
+      );
       this.props.history.push("/search");
     }
   };
 
   onCloseSnackBar = () => {
-    const defaultTime = this.initialFields();
+    const defaultFields = this.initialFields();
     this.setState(
       {
-        arrive: defaultTime.arrive,
-        depart: defaultTime.depart,
+        fields: {
+          ...defaultFields.fields,
+          arrive: defaultFields.fields.arrive,
+          depart: defaultFields.fields.depart
+        },
         snackbar: {
           open: false
         }
@@ -87,7 +100,7 @@ class BookingBox extends React.Component {
   };
 
   validateFields = () => {
-    const { arrive, depart } = this.state;
+    const { arrive, depart } = this.state.fields;
     if (!(arrive instanceof Date)) {
       return this.showSnackBar("Check-in field is not valid!", () =>
         this.fromField.getInput().focus()
@@ -101,7 +114,7 @@ class BookingBox extends React.Component {
     if (moment(depart).isBefore(moment(arrive))) {
       return this.showSnackBar("Can not check-out before check-in!");
     }
-    if (moment(depart).diff(moment(arrive), "month") > 2) {
+    if (moment(depart).diff(moment(arrive), "month") >= 2) {
       return this.showSnackBar("Can not stay more than 2 months!");
     }
     return true;
@@ -110,12 +123,15 @@ class BookingBox extends React.Component {
   // TODO map props to state
   onSelectChange = name => event => {
     this.setState({
-      [name]: event.target.value
+      fields: {
+        ...this.state.fields,
+        [name]: event.target.value
+      }
     });
   };
 
   showFromFieldMonth = () => {
-    const { arrive, depart } = this.state;
+    const { arrive, depart } = this.state.fields;
     if (!arrive) {
       return;
     }
@@ -125,243 +141,220 @@ class BookingBox extends React.Component {
   };
 
   onArriveFieldChange = arrive => {
-    this.setState({ arrive });
+    this.setState({
+      fields: {
+        ...this.state.fields,
+        arrive
+      }
+    });
   };
 
   onDepartFieldChange = depart => {
-    this.setState({ depart }, () => {
-      this.showFromFieldMonth();
+    this.setState({
+      fields: {
+        ...this.state.fields,
+        depart
+      }
     });
   };
 
   render() {
     const { classes } = this.props;
-    const {
-      arrive,
-      depart,
-      numOfRooms,
-      numOfAdults,
-      numOfChildren,
-      snackbar
-    } = this.state;
+    const { snackbar } = this.state;
+    const { arrive, depart, numOfAdults, numOfChildren } = this.state.fields;
     const modifiers = {
       start: arrive,
       end: depart
     };
 
     return (
-      <div className={classes.section}>
-        <div className={classes.bookingBox}>
-          <Grid
-            style={{ padding: "1rem" }}
-            container
-            spacing={16}
-            justify={"center"}
-            alignItems={"center"}
-            alignContent={"center"}
-          >
-            <Grid item xs={12} sm={6} md={2}>
-              <Grid
-                container
-                spacing={8}
-                justify={"center"}
-                alignContent={"center"}
-                alignItems={"center"}
-              >
-                <Grid item xs={5} sm={12}>
-                  Check-in
+      <Zoom in style={{ transitionDelay: "100ms" }}>
+        <div className={classes.section}>
+          <div className={classes.bookingBox}>
+            <Grid
+              style={{ padding: "1rem" }}
+              container
+              spacing={16}
+              justify={"center"}
+              alignItems={"center"}
+              alignContent={"center"}
+            >
+              <Grid item xs={12} sm={6} md={2}>
+                <Grid
+                  container
+                  spacing={8}
+                  justify={"center"}
+                  alignContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Grid item xs={5} sm={12}>
+                    Check-in
+                  </Grid>
+                  <Grid item xs={7} sm={12} className={classes.textBold}>
+                    <FormControl className={classes.formControl}>
+                      <DayPickerInput
+                        ref={el => (this.fromField = el)}
+                        value={arrive}
+                        placeholder="arrive"
+                        format="LL"
+                        formatDate={formatDate}
+                        parseDate={parseDate}
+                        inputProps={{
+                          className: classes.dateSelectField
+                        }}
+                        dayPickerProps={{
+                          selectedDays: [arrive, { arrive, depart }],
+                          disabledDays: { before: new Date() },
+                          modifiers,
+                          onDayClick: () => this.toField.getInput().focus()
+                        }}
+                        onDayChange={this.onArriveFieldChange}
+                      />
+                    </FormControl>
+                  </Grid>
                 </Grid>
-                <Grid item xs={7} sm={12} className={classes.textBold}>
-                  <FormControl className={classes.formControl}>
-                    <DayPickerInput
-                      ref={el => (this.fromField = el)}
-                      value={arrive}
-                      placeholder="arrive"
-                      format="LL"
-                      formatDate={formatDate}
-                      parseDate={parseDate}
-                      inputProps={{
-                        className: classes.dateSelectField
-                      }}
-                      dayPickerProps={{
-                        selectedDays: [arrive, { arrive, depart }],
-                        disabledDays: { after: depart },
-                        toMonth: depart,
-                        modifiers,
-                        onDayClick: () => this.toField.getInput().focus()
-                      }}
-                      onDayChange={this.onArriveFieldChange}
-                    />
-                  </FormControl>
+              </Grid>
+              {/*depart*/}
+              <Grid item xs={12} sm={6} md={2}>
+                <Grid
+                  container
+                  spacing={8}
+                  justify={"center"}
+                  alignContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Grid item xs={5} sm={12}>
+                    Check-out
+                  </Grid>
+                  <Grid item xs={7} sm={12} className={classes.textBold}>
+                    <FormControl className={classes.formControl}>
+                      <DayPickerInput
+                        ref={el => (this.toField = el)}
+                        value={depart}
+                        placeholder="To"
+                        format="LL"
+                        formatDate={formatDate}
+                        parseDate={parseDate}
+                        inputProps={{
+                          className: classes.dateSelectField
+                        }}
+                        dayPickerProps={{
+                          selectedDays: [arrive, { arrive, depart }],
+                          disabledDays: { before: arrive },
+                          modifiers,
+                          month: arrive,
+                          fromMonth: arrive
+                        }}
+                        onDayChange={this.onDepartFieldChange}
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+              {/*num adults*/}
+              <Grid item xs={12} sm={6} md={2}>
+                <Grid
+                  container
+                  spacing={8}
+                  justify={"center"}
+                  alignItems={"center"}
+                >
+                  <Grid item xs={5} sm={12}>
+                    Adults
+                  </Grid>
+                  <Grid item xs={7} sm={12} className={classes.textBold}>
+                    <FormControl className={classes.formControl}>
+                      <NativeSelect
+                        value={numOfAdults}
+                        onChange={this.onSelectChange("numOfAdults")}
+                        input={<Input name="numOfAdults" id="numOfAdults" />}
+                      >
+                        <option value={"0"}>None</option>
+                        <option value={"1"}>1</option>
+                        <option value={"2"}>2</option>
+                        <option value={"2+"}>2+</option>
+                      </NativeSelect>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+              {/*num children*/}
+              <Grid item xs={12} sm={6} md={2}>
+                <Grid
+                  container
+                  spacing={8}
+                  justify={"center"}
+                  alignItems={"center"}
+                >
+                  <Grid item xs={5} sm={12}>
+                    Children
+                  </Grid>
+                  <Grid item xs={7} sm={12} className={classes.textBold}>
+                    <FormControl className={classes.formControl}>
+                      <NativeSelect
+                        value={numOfChildren}
+                        input={
+                          <Input name="numOfChildren" id="numOfChildren" />
+                        }
+                        onChange={this.onSelectChange("numOfChildren")}
+                      >
+                        <option value={"0"}>None</option>
+                        <option value={"1"}>1</option>
+                        <option value={"2"}>2</option>
+                        <option value={"2+"}>2+</option>
+                      </NativeSelect>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+              {/*submit button*/}
+              <Grid item xs={12} sm={12} md={2}>
+                <Grid container direction={"column"} alignItems={"center"}>
+                  <Grid item>
+                    <FormControl className={classes.formControl}>
+                      <Button
+                        variant={"extendedFab"}
+                        color={"secondary"}
+                        onClick={this.checkAvailability}
+                      >
+                        Check availability
+                      </Button>
+                    </FormControl>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-            {/*depart*/}
-            <Grid item xs={12} sm={6} md={2}>
-              <Grid
-                container
-                spacing={8}
-                justify={"center"}
-                alignContent={"center"}
-                alignItems={"center"}
-              >
-                <Grid item xs={5} sm={12}>
-                  Check-out
-                </Grid>
-                <Grid item xs={7} sm={12} className={classes.textBold}>
-                  <FormControl className={classes.formControl}>
-                    <DayPickerInput
-                      ref={el => (this.toField = el)}
-                      value={depart}
-                      placeholder="To"
-                      format="LL"
-                      formatDate={formatDate}
-                      parseDate={parseDate}
-                      inputProps={{
-                        className: classes.dateSelectField
-                      }}
-                      dayPickerProps={{
-                        selectedDays: [arrive, { arrive, depart }],
-                        disabledDays: { before: arrive },
-                        modifiers,
-                        month: arrive,
-                        fromMonth: arrive
-                      }}
-                      onDayChange={this.onDepartFieldChange}
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-            {/*num rooms*/}
-            <Grid item xs={12} sm={4} md={2}>
-              <Grid
-                container
-                spacing={8}
-                justify={"center"}
-                alignItems={"center"}
-              >
-                <Grid item xs={5} sm={12}>
-                  Rooms
-                </Grid>
-                <Grid item xs={7} sm={12} className={classes.textBold}>
-                  <FormControl className={classes.formControl}>
-                    <NativeSelect
-                      value={numOfRooms}
-                      onChange={this.onSelectChange("numOfRooms")}
-                      input={<Input name="numOfRooms" id="numOfRooms" />}
-                    >
-                      <option value={"1"}>1</option>
-                      <option value={"2"}>2</option>
-                      <option value={"3"}>3</option>
-                      <option value={"4+"}>4+</option>
-                    </NativeSelect>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-            {/*num adults*/}
-            <Grid item xs={12} sm={4} md={2}>
-              <Grid
-                container
-                spacing={8}
-                justify={"center"}
-                alignItems={"center"}
-              >
-                <Grid item xs={5} sm={12}>
-                  Adults
-                </Grid>
-                <Grid item xs={7} sm={12} className={classes.textBold}>
-                  <FormControl className={classes.formControl}>
-                    <NativeSelect
-                      value={numOfAdults}
-                      onChange={this.onSelectChange("numOfAdults")}
-                      input={<Input name="numOfAdults" id="numOfAdults" />}
-                    >
-                      <option value={"0"}>None</option>
-                      <option value={"1"}>1</option>
-                      <option value={"2"}>2</option>
-                      <option value={"2+"}>2+</option>
-                    </NativeSelect>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-            {/*num children*/}
-            <Grid item xs={12} sm={4} md={2}>
-              <Grid
-                container
-                spacing={8}
-                justify={"center"}
-                alignItems={"center"}
-              >
-                <Grid item xs={5} sm={12}>
-                  Children
-                </Grid>
-                <Grid item xs={7} sm={12} className={classes.textBold}>
-                  <FormControl className={classes.formControl}>
-                    <NativeSelect
-                      value={numOfChildren}
-                      input={<Input name="numOfChildren" id="numOfChildren" />}
-                      onChange={this.onSelectChange("numOfChildren")}
-                    >
-                      <option value={"0"}>None</option>
-                      <option value={"1"}>1</option>
-                      <option value={"2"}>2</option>
-                      <option value={"2+"}>2+</option>
-                    </NativeSelect>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-            {/*submit button*/}
-            <Grid item xs={12} sm={12} md={2}>
-              <Grid container direction={"column"} alignItems={"center"}>
-                <Grid item>
-                  <FormControl className={classes.formControl}>
-                    <Button
-                      variant={"extendedFab"}
-                      color={"secondary"}
-                      onClick={this.checkAvailability}
-                    >
-                      Check availability
-                    </Button>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Snackbar
-            open={snackbar.open}
-            autoHideDuration={6000}
-            onClose={this.onCloseSnackBar}
-            ContentProps={{
-              "aria-describedby": "message-id"
-            }}
-            message={<span id="message-id">{snackbar.message}</span>}
-            action={[
-              <Button
-                key="undo"
-                color="secondary"
-                size="small"
-                onClick={this.onCloseSnackBar}
-              >
-                UNDO
-              </Button>,
-              <IconButton
-                key="close"
-                aria-label="Close"
-                color="inherit"
-                className={classes.close}
-                onClick={this.onCloseSnackBar}
-              >
-                <CloseIcon />
-              </IconButton>
-            ]}
-          />
-          <Helmet>
-            <style>
-              {`
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={6000}
+              onClose={this.onCloseSnackBar}
+              ContentProps={{
+                "aria-describedby": "message-id"
+              }}
+              message={<span id="message-id">{snackbar.message}</span>}
+              action={[
+                <Button
+                  key="undo"
+                  color="secondary"
+                  size="small"
+                  onClick={this.onCloseSnackBar}
+                >
+                  UNDO
+                </Button>,
+                <IconButton
+                  key="close"
+                  aria-label="Close"
+                  color="inherit"
+                  className={classes.close}
+                  onClick={this.onCloseSnackBar}
+                >
+                  <CloseIcon />
+                </IconButton>
+              ]}
+            />
+            <Helmet>
+              <style>
+                {`
 
             .DayPickerInput-Overlay {
               position: fixed;
@@ -385,10 +378,11 @@ class BookingBox extends React.Component {
               border-bottom-right-radius: 50%;
             }
           `}
-            </style>
-          </Helmet>
+              </style>
+            </Helmet>
+          </div>
         </div>
-      </div>
+      </Zoom>
     );
   }
 }

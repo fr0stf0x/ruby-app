@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 import classNames from "classnames";
-import TeamSection from "../../views/LandingPage/Sections/TeamSection";
 import Footer from "../../components/Footer/Footer";
 import BookingBox from "./Booking/BookingBox";
 import Button from "../../components/CustomButtons/Button";
@@ -8,6 +7,9 @@ import NavHeader from "../Layouts/NavHeader";
 import NavBar from "../Layouts/NavBar";
 import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
 import withStyles from "@material-ui/core/es/styles/withStyles";
+import { END_POINTS } from "../Utils/apiCall";
+import actions from "../Actions/actions";
+import { connect } from "react-redux";
 
 const HeaderButton = () => (
   <Button
@@ -23,11 +25,15 @@ const HeaderButton = () => (
 );
 
 class BrightHotel extends React.Component {
+  componentDidMount() {
+    this.props.dispatch(
+      actions.server.getDataIfNeeded(END_POINTS.allRoomTypes)
+    );
+  }
+
   render() {
     const { classes } = this.props;
-    const FeaturedRoomTypes = React.lazy(() =>
-      import("./Room/FeaturedRoomTypes")
-    );
+    const RoomTypes = React.lazy(() => import("./Room/RoomTypes"));
     return (
       <div>
         <NavBar />
@@ -42,9 +48,9 @@ class BrightHotel extends React.Component {
             <BookingBox />
             <Suspense fallback={<div>Loading</div>}>
               <h2 align="center">Featured rooms</h2>
-              <FeaturedRoomTypes />
+              <RoomTypes type={END_POINTS.allRoomTypes} />
             </Suspense>
-            <TeamSection />
+            {/*<TeamSection />*/}
           </div>
         </div>
         <Footer />;
@@ -53,4 +59,4 @@ class BrightHotel extends React.Component {
   }
 }
 
-export default withStyles(landingPageStyle)(BrightHotel);
+export default connect(() => ({}))(withStyles(landingPageStyle)(BrightHotel));

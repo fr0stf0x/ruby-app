@@ -1,18 +1,10 @@
-import * as types from "../Utils/ActionTypes";
+import types from "../Actions/types";
 import { combineReducers } from "redux";
 
-const cart = {
-  rooms: [],
-  services: []
-};
-
-const rooms = (state = cart, action) => {
+const rooms = (state = [], action) => {
   switch (action.type) {
     case types.ADD_ROOM_TO_CART:
-      return {
-        ...state,
-        rooms: [...state.rooms, action.roomId]
-      };
+      return [...state, action.roomId];
     case types.REMOVE_ROOM_FROM_CART:
       return state.slice(
         0,
@@ -23,13 +15,10 @@ const rooms = (state = cart, action) => {
   }
 };
 
-const services = (state = cart, action) => {
+const services = (state = [], action) => {
   switch (action.type) {
     case types.ADD_SERVICE_TO_CART:
-      return {
-        ...state,
-        services: [...state.services, action.serviceId]
-      };
+      return [...state, action.serviceId];
     case types.REMOVE_SERVICE_FROM_CART:
       return state.slice(
         0,

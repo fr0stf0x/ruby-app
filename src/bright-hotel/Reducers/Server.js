@@ -1,6 +1,18 @@
-import * as types from "../Utils/ActionTypes";
+import types from "../Actions/types";
+import { mergeItemInArray, mergeObj } from "../Utils/utils";
 
-const merge = (target, ...source) => Object.assign({}, target, ...source);
+const toggleFullScreen = (
+  state = {
+    dialogOpen: false
+  },
+  action
+) => {
+  return mergeItemInArray(state, action.id, room =>
+    mergeObj(room, {
+      dialogOpen: !room.dialogOpen
+    })
+  );
+};
 
 const endpoint = (
   state = {
@@ -12,23 +24,37 @@ const endpoint = (
 ) => {
   switch (action.type) {
     case types.INVALIDATE_DATA:
-      return merge(state, {
-        didInvalidate: true
-      });
+      return invalidateData(state, action);
     case types.REQUEST_DATA:
-      return merge(state, {
-        isFetching: true,
-        didInvalidate: false
-      });
+      return requestData(state, action);
     case types.RECEIVE_DATA:
-      return merge(state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.data
+      return receiveData(state, action);
+    case types.TOGGLE_SHOW_DATA:
+      return mergeObj(state, {
+        items: toggleFullScreen(state.items, action)
       });
-    default:
-      return state;
   }
+};
+
+const requestData = state => {
+  return mergeObj(state, {
+    isFetching: true,
+    didInvalidate: false
+  });
+};
+
+const invalidateData = state => {
+  return mergeObj(state, {
+    didInvalidate: true
+  });
+};
+
+const receiveData = (state, action) => {
+  return mergeObj(state, {
+    isFetching: false,
+    didInvalidate: false,
+    items: action.data
+  });
 };
 
 const server = (state = {}, action) => {
@@ -36,7 +62,11 @@ const server = (state = {}, action) => {
     case types.INVALIDATE_DATA:
     case types.REQUEST_DATA:
     case types.RECEIVE_DATA:
-      return merge(state, {
+      return mergeObj(state, {
+        [action.endpoint]: endpoint(state[action.endpoint], action)
+      });
+    case types.TOGGLE_SHOW_DATA:
+      return mergeObj(state, {
         [action.endpoint]: endpoint(state[action.endpoint], action)
       });
     default:

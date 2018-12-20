@@ -8,6 +8,7 @@ import AllServices from "./Service/AllServices";
 import FeaturedServices from "./Service/FeaturedServices";
 import NavHeader from "../Layouts/NavHeader";
 import NavBar from "../Layouts/NavBar";
+import { Fade } from "@material-ui/core";
 
 class ServicePage extends React.Component {
   state = {
@@ -30,24 +31,26 @@ class ServicePage extends React.Component {
           image={require("assets/img/bright-hotel/bg_3.jpg")}
           title={"Facilities & Service"}
         />
-        <div className={classNames(classes.main, classes.mainRaised)}>
-          <div className={classes.container}>
-            <FeaturedServices />
-            {fetched ? (
-              <AllServices />
-            ) : (
-              <div align="center">
-                <Button
-                  size="lg"
-                  color="info"
-                  onClick={this.toggleGetAllServices}
-                >
-                  See all
-                </Button>
-              </div>
-            )}
+        <Fade in>
+          <div className={classNames(classes.main, classes.mainRaised)}>
+            <div className={classes.container}>
+              <FeaturedServices />
+              {fetched ? (
+                <AllServices />
+              ) : (
+                <div align="center">
+                  <Button
+                    size="lg"
+                    color="info"
+                    onClick={this.toggleGetAllServices}
+                  >
+                    See all
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </Fade>
         <Footer />
       </div>
     );

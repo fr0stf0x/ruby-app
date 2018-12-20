@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createBrowserHistory } from "history";
+import history from "./history";
 import { Route, Router, Switch } from "react-router-dom";
 
 import indexRoutes from "routes/index.jsx";
@@ -12,11 +12,9 @@ import configureStore from "./configureStore";
 
 const store = configureStore();
 
-const hist = createBrowserHistory();
-
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={hist}>
+    <Router history={history}>
       <ScrollToTop>
         <Switch>
           {indexRoutes.map((prop, key) => {

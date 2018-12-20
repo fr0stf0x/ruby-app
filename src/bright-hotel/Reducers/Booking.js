@@ -1,4 +1,5 @@
-import * as types from "../Utils/ActionTypes";
+import types from "../Actions/types";
+import { mergeObj } from "../Utils/utils";
 
 const initialFields = {
   isEmpty: true
@@ -9,7 +10,8 @@ const bookingFields = (state = initialFields, action) => {
 
   switch (type) {
     case types.CHANGE_FIELDS:
-      return Object.assign({}, state, fields, {
+      return mergeObj(state, {
+        fields,
         isEmpty: false
       });
     default:
