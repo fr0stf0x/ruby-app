@@ -1,18 +1,5 @@
 import types from "../Actions/types";
-import { mergeItemInArray, mergeObj } from "../Utils/utils";
-
-const toggleFullScreen = (
-  state = {
-    dialogOpen: false
-  },
-  action
-) => {
-  return mergeItemInArray(state, action.id, room =>
-    mergeObj(room, {
-      dialogOpen: !room.dialogOpen
-    })
-  );
-};
+import { mergeObj } from "../Utils/utils";
 
 const endpoint = (
   state = {
