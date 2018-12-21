@@ -10,6 +10,7 @@ import withStyles from "@material-ui/core/es/styles/withStyles";
 import END_POINTS from "../Utils/api";
 import actions from "../Actions/actions";
 import { connect } from "react-redux";
+import { ROOMTYPE_FILTER_AVAILABLE } from "../Reducers/Ui";
 
 const HeaderButton = () => (
   <Button
@@ -29,7 +30,14 @@ class BrightHotel extends React.Component {
     this.props.dispatch(
       actions.server.getDataIfNeeded(END_POINTS.ALL_ROOM_TYPES)
     );
+    this.props.dispatch(actions.server.getDataIfNeeded(END_POINTS.HOTELS));
   }
+
+  toggleFilter = () => {
+    this.props.dispatch(
+      actions.filter.setRoomTypeFilter(ROOMTYPE_FILTER_AVAILABLE)
+    );
+  };
 
   render() {
     const { classes } = this.props;
@@ -38,7 +46,7 @@ class BrightHotel extends React.Component {
       <div>
         <NavBar />
         <NavHeader
-          image={require("assets/img/bright-hotel/bg_1.jpg")}
+          image={require("assets/img/bright-hotel/bg_001.jpg")}
           title={"Enjoy luxury experience"}
           subtitle={"Scroll down to see more"}
           content={<HeaderButton />}
@@ -46,10 +54,11 @@ class BrightHotel extends React.Component {
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div className={classes.container}>
             <BookingBox />
-            <Suspense fallback={<div>Loading</div>}>
+            <Suspense fallback={<h2>Loading</h2>}>
               <h2 align="center">Featured rooms</h2>
-              <RoomTypes type={END_POINTS.allRoomTypes} />
+              <RoomTypes endpoint={END_POINTS.ALL_ROOM_TYPES} />
             </Suspense>
+            <Button onClick={this.toggleFilter}>Change filter</Button>
             {/*<TeamSection />*/}
           </div>
         </div>

@@ -4,8 +4,7 @@ import { mergeObj } from "../Utils/utils";
 const endpoint = (
   state = {
     isFetching: false,
-    didInvalidate: false,
-    items: {}
+    didInvalidate: false
   },
   action
 ) => {
@@ -35,24 +34,30 @@ const invalidateData = state => {
 };
 
 const receiveData = (state, action) => {
-  return mergeObj(state, {
-    isFetching: false,
-    didInvalidate: false,
-    items: action.data
-  });
+  return mergeObj(
+    state,
+    {
+      isFetching: false,
+      didInvalidate: false
+    },
+    Object.entries(action.payload).reduce((obj, [key, value]) => {
+      obj[key] = value;
+      return obj;
+    }, {})
+  );
 };
 
-const server = (state = {}, action) => {
+const data = (state = {}, action) => {
   switch (action.type) {
     case types.INVALIDATE_DATA:
     case types.REQUEST_DATA:
     case types.RECEIVE_DATA:
       return mergeObj(state, {
-        [action.endpoint]: endpoint(state[action.endpoint], action)
+        [action.meta.endpoint]: endpoint(state[action.meta.endpoint], action)
       });
     default:
       return state;
   }
 };
 
-export default server;
+export default data;

@@ -1,23 +1,24 @@
+import React from "react";
+
 import Button from "@material-ui/core/Button/Button";
-import withStyles from "@material-ui/core/es/styles/withStyles";
-import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
+import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
 import Input from "@material-ui/core/Input";
-import NativeSelect from "@material-ui/core/NativeSelect";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
+import Zoom from "@material-ui/core/Zoom";
+import withStyles from "@material-ui/core/es/styles/withStyles";
+
 import moment from "moment";
-import React from "react";
-// date selector
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
 import { formatDate, parseDate } from "react-day-picker/moment";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+
 import actions from "../../Actions/actions";
-import Zoom from "@material-ui/core/Zoom";
 import productStyle from "../../../assets/jss/material-kit-react/views/landingPageSections/productStyle";
 
 const styles = {
@@ -30,11 +31,11 @@ const styles = {
     fontWeight: "bold"
   },
   formControl: {
-    minWidth: "80% !important"
+    minWidth: "100% !important"
   },
-
   dateSelectField: {
-    width: "100%"
+    width: "100%",
+    fontSize: "0.75em"
   }
 };
 
@@ -57,7 +58,9 @@ class BookingBox extends React.Component {
 
   componentWillUnmount() {
     this.props.dispatch(
-      actions.bookingFields.changeFieldsIfNeeded(this.state.fields)
+      actions.bookingFields.changeFieldsAndInvalidateAvailableRooms(
+        this.state.fields
+      )
     );
   }
 
@@ -66,7 +69,9 @@ class BookingBox extends React.Component {
   checkAvailability = () => {
     if (this.validateFields()) {
       this.props.dispatch(
-        actions.bookingFields.changeFieldsIfNeeded(this.state.fields)
+        actions.bookingFields.changeFieldsAndInvalidateAvailableRooms(
+          this.state.fields
+        )
       );
       this.props.history.push("/search");
     }
@@ -121,7 +126,7 @@ class BookingBox extends React.Component {
   };
 
   // TODO map props to state
-  onSelectChange = name => event => {
+  onNumChange = name => event => {
     this.setState({
       fields: {
         ...this.state.fields,
@@ -264,16 +269,13 @@ class BookingBox extends React.Component {
                   </Grid>
                   <Grid item xs={7} sm={12} className={classes.textBold}>
                     <FormControl className={classes.formControl}>
-                      <NativeSelect
+                      <Input
+                        type="number"
                         value={numOfAdults}
-                        onChange={this.onSelectChange("numOfAdults")}
-                        input={<Input name="numOfAdults" id="numOfAdults" />}
-                      >
-                        <option value={"0"}>None</option>
-                        <option value={"1"}>1</option>
-                        <option value={"2"}>2</option>
-                        <option value={"2+"}>2+</option>
-                      </NativeSelect>
+                        name={"numOfAdults"}
+                        onChange={this.onNumChange("numOfAdults")}
+                        inputProps={{ min: "0", max: "10", step: "1" }}
+                      />
                     </FormControl>
                   </Grid>
                 </Grid>
@@ -291,18 +293,13 @@ class BookingBox extends React.Component {
                   </Grid>
                   <Grid item xs={7} sm={12} className={classes.textBold}>
                     <FormControl className={classes.formControl}>
-                      <NativeSelect
+                      <Input
+                        type="number"
                         value={numOfChildren}
-                        input={
-                          <Input name="numOfChildren" id="numOfChildren" />
-                        }
-                        onChange={this.onSelectChange("numOfChildren")}
-                      >
-                        <option value={"0"}>None</option>
-                        <option value={"1"}>1</option>
-                        <option value={"2"}>2</option>
-                        <option value={"2+"}>2+</option>
-                      </NativeSelect>
+                        name={"numOfChildren"}
+                        onChange={this.onNumChange("numOfChildren")}
+                        inputProps={{ min: "0", max: "10", step: "1" }}
+                      />
                     </FormControl>
                   </Grid>
                 </Grid>
@@ -355,29 +352,29 @@ class BookingBox extends React.Component {
             <Helmet>
               <style>
                 {`
-
-            .DayPickerInput-Overlay {
-              position: fixed;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-            }
-            .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
-              background-color: #f0f8ff;
-              color: #4a90e2;
-            }
-            .DayPicker-Day {
-              border-radius: 0;
-            }
-            .DayPicker-Day--start {
-              border-top-left-radius: 50%;
-              border-bottom-left-radius: 50%;
-            }
-            .DayPicker-Day--end {
-              border-top-right-radius: 50%;
-              border-bottom-right-radius: 50%;
-            }
-          `}
+      .DayPickerInput-Overlay {
+        position: fixed; !important;
+        top: 50%; !important;
+        left: 50%; !important;
+        z-index: 999; !important;
+        transform: translate(-50%, -50%); !important;
+      }
+      .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+        background-color: #f0f8ff;
+        color: #4a90e2;
+      }
+      .DayPicker-Day {
+        border-radius: 0;
+      }
+      .DayPicker-Day--start {
+        border-top-left-radius: 50%;
+        border-bottom-left-radius: 50%;
+      }
+      .DayPicker-Day--end {
+        border-top-right-radius: 50%;
+        border-bottom-right-radius: 50%;
+      }
+    `}
               </style>
             </Helmet>
           </div>

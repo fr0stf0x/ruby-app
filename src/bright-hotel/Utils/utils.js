@@ -30,10 +30,12 @@ export const mergeItemInArray = (array, itemId, callback) => {
 
 export const fetchDataFromServer = (
   endpoint,
-  params,
+  queryParams,
   options = { limit: 10 }
 ) => {
-  let url = `${API_URL}/${endpoint}?${stringify(params)}&${stringify(options)}`;
+  let url = `${API_URL}/${endpoint}?${stringify(queryParams)}&${stringify(
+    options
+  )}`;
   console.log("url", url);
   return fetch(url)
     .then(res => res.json())

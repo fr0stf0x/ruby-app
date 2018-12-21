@@ -1,19 +1,24 @@
 import { combineReducers } from "redux";
 import cart from "./Cart";
 import bookingFields from "./Booking";
-import server from "./Server";
+import data from "./Server";
 import uiState from "./Ui";
 
 const BrightHotelApp = combineReducers({
   bookingFields,
   cart,
-  uiState,
-  data: server
+  data,
+  uiState
 });
 
 export const createReducer = (initialState, handlers) => {
-  return (state = initialState, action) =>
-    handlers[action.type](state, action) || state;
+  return function reducer(state = initialState, action) {
+    if (handlers.hasOwnProperty(action.type)) {
+      return handlers[action.type](state, action);
+    } else {
+      return state;
+    }
+  };
 };
 
 export default BrightHotelApp;

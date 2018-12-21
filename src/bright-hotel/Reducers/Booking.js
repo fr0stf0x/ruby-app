@@ -6,12 +6,10 @@ const initialFields = {
 };
 
 const bookingFields = (state = initialFields, action) => {
-  const { type, fields } = action;
-
-  switch (type) {
+  switch (action.type) {
     case types.CHANGE_FIELDS:
       return mergeObj(state, {
-        fields,
+        fields: action.payload.fields,
         isEmpty: false
       });
     default:

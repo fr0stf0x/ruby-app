@@ -28,7 +28,7 @@ class ServicePage extends React.Component {
       <div>
         <NavBar />
         <NavHeader
-          image={require("assets/img/bright-hotel/bg_3.jpg")}
+          image={require("assets/img/bright-hotel/bg_004.jpg")}
           title={"Facilities & Service"}
         />
         <Fade in>

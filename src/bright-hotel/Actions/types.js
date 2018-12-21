@@ -18,6 +18,9 @@ const CHECK_AVAILABILITY = "check_rooms";
 // const SET_CURRENT_ROOM = "set_current_room";
 const TOGGLE_SHOW_DATA = "toggle_detail";
 
+const SET_HOTEL_FILTER = "set_hotel_filter";
+const SET_ROOMTYPE_FILTER = "set_roomtype_filter";
+
 const types = {
   INVALIDATE_DATA,
   REQUEST_DATA,
@@ -31,7 +34,9 @@ const types = {
   REMOVE_SERVICE_FROM_CART,
   CHANGE_FIELDS,
   CHECK_AVAILABILITY,
-  TOGGLE_SHOW_DATA
+  TOGGLE_SHOW_DATA,
+  SET_HOTEL_FILTER,
+  SET_ROOMTYPE_FILTER
 };
 
 export default types;

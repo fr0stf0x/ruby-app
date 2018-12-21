@@ -11,7 +11,7 @@ const NotFoundPage = props => (
   <div>
     <NavBar />
     <NavHeader
-      image={require("assets/img/bright-hotel/bg_2.jpg")}
+      image={require("assets/img/bright-hotel/bg_005.jpg")}
       title={"Page Not Found"}
       content={
         <Button

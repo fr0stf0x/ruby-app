@@ -8,24 +8,55 @@ const styles = theme => ({
     height: "100%"
   },
   imgWrapper: {
-    padding: "0px",
     [theme.breakpoints.up("xs")]: {
       height: 250
     },
     [theme.breakpoints.up("sm")]: {
-      height: 400
+      height: 300
     },
     [theme.breakpoints.up("md")]: {
       height: 500
     },
     [theme.breakpoints.up("lg")]: {
       height: 600
+    },
+    cursor: "pointer",
+    "&:hover": {
+      opacity: "0.7"
+    }
+  },
+  imgWrapperFull: {
+    [theme.breakpoints.up("xs")]: {
+      height: 250
+    },
+    [theme.breakpoints.up("sm")]: {
+      height: 300
+    },
+    [theme.breakpoints.up("md")]: {
+      height: 650
+    },
+    cursor: "pointer",
+    "&:hover": {
+      opacity: "0.7"
     }
   },
   container: {
-    padding: "0px",
+    height: "100%",
     backgroundColor: "#ffffff",
-    margin: "1.5rem",
+    margin: "1.75rem 0",
+    boxShadow: "rgba(0,0,0,0.3) 0px 0px 30px 0px",
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+      margin: "0.5rem 0"
+    }
+  },
+  inner: {
+    padding: 0,
+    display: "table-cell",
+    verticalAlign: "middle",
+    marginLeft: "auto",
+    marginRight: "auto",
+    backgroundColor: "#ffffff",
     boxShadow: "rgba(0,0,0,0.3) 0px 0px 30px 0px",
     [theme.breakpoints.down("sm")]: {
       textAlign: "center"

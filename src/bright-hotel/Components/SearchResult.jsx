@@ -8,7 +8,7 @@ import Footer from "../../components/Footer/Footer";
 import actions from "../Actions/actions";
 import NavBar from "../Layouts/NavBar";
 import NavHeader from "../Layouts/NavHeader";
-import RoomTypes from "./Room/RoomTypes";
+import END_POINTS from "../Utils/api";
 
 class SearchResult extends React.Component {
   componentDidMount() {
@@ -27,17 +27,18 @@ class SearchResult extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const RoomTypes = React.lazy(() => import("./Room/RoomTypes"));
     return (
       <div>
         <NavBar />
         <NavHeader
           title={"Found some rooms for you"}
-          image={require("assets/img/bright-hotel/bg_1.jpg")}
+          image={require("assets/img/bright-hotel/bg_003.jpg")}
         />
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div className={classes.container}>
-            <Suspense fallback={<div>Loading</div>}>
-              <RoomTypes />
+            <Suspense fallback={<h2>Loading</h2>}>
+              <RoomTypes endpoint={END_POINTS.CHECK_AVAILABLE} />
             </Suspense>
           </div>
         </div>

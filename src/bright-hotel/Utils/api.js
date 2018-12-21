@@ -19,11 +19,32 @@ const END_POINTS = {
 
 export const mapEndpoint = endpoint => {
   switch (endpoint) {
-    case END_POINTS.CHECK_AVAILABLE:
-    case END_POINTS.ALL_ROOM_TYPES:
-      return "roomTypes";
+    case CHECK_AVAILABLE:
+      return "availability";
+    case ALL_ROOM_TYPES:
+      return "allRoomTypes";
     default:
       return endpoint;
+  }
+};
+
+export const mapEndpointId = endpoint => {
+  switch (endpoint) {
+    case CHECK_AVAILABLE:
+    case HOTELS:
+      return "hotelName";
+    default:
+      return "id";
+  }
+};
+
+export const mapQuery = endpoint => {
+  switch (endpoint) {
+    case HOTELS:
+    case CHECK_AVAILABLE:
+      return ["byHotelName", "allHotelNames"];
+    default:
+      return ["byId", "allIds"];
   }
 };
 

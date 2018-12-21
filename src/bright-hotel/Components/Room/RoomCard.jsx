@@ -1,21 +1,30 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
-import classNames from "classnames";
-import { formatMoney, randomImage } from "../../Utils/utils";
+
 import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 import withStyles from "@material-ui/core/es/styles/withStyles";
+
+import classNames from "classnames";
+
 import styles, { renderCapacityIcon } from "./roomCardStyle";
+import { formatMoney, randomImage } from "../../Utils/utils";
 
 const RoomCard = props => {
-  const { roomType, direction = "row", classes } = props;
-  const isFullScreen = props.fullScreen;
+  const {
+    roomType,
+    direction = "row",
+    fullScreen: isFullScreen,
+    classes,
+    toggleDialog,
+    bookHandler
+  } = props;
   const shownDescription = isFullScreen
     ? roomType.descr
     : roomType.descr.substr(0, roomType.descr.indexOf(".")).concat("...");
 
   return (
     <div>
-      <div className={isFullScreen ? {} : classes.container}>
+      <div className={classes.container}>
         <Grid
           container
           direction={direction}
@@ -23,7 +32,12 @@ const RoomCard = props => {
           alignItems={"center"}
         >
           <Grid item xs={12} md={6}>
-            <div className={isFullScreen ? {} : classes.imgWrapper}>
+            <div
+              className={
+                (isFullScreen && classes.imgWrapperFull) || classes.imgWrapper
+              }
+              onClick={toggleDialog}
+            >
               <img
                 alt={roomType.name}
                 className={classes.media}
@@ -51,31 +65,16 @@ const RoomCard = props => {
               </div>
               <div
                 className={classNames(
-                  props.fullScreen
-                    ? classes.attributeNoHidden
-                    : classes.attribute,
+                  isFullScreen ? classes.attributeNoHidden : classes.attribute,
                   classes.marginVertical,
                   classes.roomDescription
                 )}
               >
                 {shownDescription}
-                {!props.fullScreen && (
-                  <div className={classes.marginVertical}>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={props.toggleDialog}
-                    >
-                      READ MORE
-                    </Button>
-                  </div>
-                )}
               </div>
               <div
                 className={
-                  props.fullScreen
-                    ? classes.attributeNoHidden
-                    : classes.attribute
+                  isFullScreen ? classes.attributeNoHidden : classes.attribute
                 }
               >
                 Facilities:
@@ -85,9 +84,7 @@ const RoomCard = props => {
               </div>
               <div
                 className={
-                  props.fullScreen
-                    ? classes.attributeNoHidden
-                    : classes.attribute
+                  isFullScreen ? classes.attributeNoHidden : classes.attribute
                 }
               >
                 Capacity:
@@ -97,19 +94,30 @@ const RoomCard = props => {
               </div>
               <div className={classes.marginVertical}>
                 <Button
-                  className={classNames(
-                    classes.letterSpacing,
-                    classes.marginHorizontal
-                  )}
+                  className={classes.letterSpacing}
                   variant={"contained"}
                   color={"secondary"}
                   size={"large"}
-                  onClick={props.bookHandler}
+                  onClick={() => {
+                    isFullScreen && toggleDialog();
+                    bookHandler();
+                  }}
                 >
-                  BOOK NOW
+                  Check availability
                 </Button>
-                {props.children}
               </div>
+              {!isFullScreen && (
+                <div className={classes.marginVertical}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={toggleDialog}
+                  >
+                    READ MORE
+                  </Button>
+                </div>
+              )}
+              <div className={classes.marginVertical}>{props.children}</div>
             </div>
           </Grid>
         </Grid>

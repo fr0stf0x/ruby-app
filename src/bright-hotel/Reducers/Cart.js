@@ -4,7 +4,7 @@ import { combineReducers } from "redux";
 const rooms = (state = [], action) => {
   switch (action.type) {
     case types.ADD_ROOM_TO_CART:
-      return [...state, action.roomId];
+      return [...state, action.payload.roomId];
     case types.REMOVE_ROOM_FROM_CART:
       return state.slice(
         0,
@@ -18,7 +18,7 @@ const rooms = (state = [], action) => {
 const services = (state = [], action) => {
   switch (action.type) {
     case types.ADD_SERVICE_TO_CART:
-      return [...state, action.serviceId];
+      return [...state, action.payload.serviceId];
     case types.REMOVE_SERVICE_FROM_CART:
       return state.slice(
         0,

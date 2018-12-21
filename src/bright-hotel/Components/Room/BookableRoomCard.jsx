@@ -1,19 +1,17 @@
 import React from "react";
-import RoomCard from "./RoomCard";
 import { connect } from "react-redux";
-import RoomDetailDialog from "./RoomDetailDialog";
+
+import FullScreenableRoomCard from "./FullScreenableRoomCard";
 import history from "../../../history";
 import { selectRoomTypeById } from "../../Reducers/selectors";
 
 class BookableRoomCard extends React.Component {
   state = {
-    fullScreen: false
+    dialogOpen: false
   };
 
   toggleDialog = () => {
-    this.setState({
-      fullScreen: !this.state.fullScreen
-    });
+    this.setState({ dialogOpen: !this.state.dialogOpen });
   };
 
   bookHandler = () => {
@@ -24,14 +22,8 @@ class BookableRoomCard extends React.Component {
     const { roomType, direction = "row" } = this.props;
     return (
       <div>
-        <RoomDetailDialog
-          open={this.state.fullScreen}
-          roomType={roomType}
-          direction={direction}
-          toggleDialog={this.toggleDialog}
-          bookHandler={this.bookHandler}
-        />
-        <RoomCard
+        <FullScreenableRoomCard
+          fullScreen={this.state.dialogOpen}
           roomType={roomType}
           direction={direction}
           toggleDialog={this.toggleDialog}

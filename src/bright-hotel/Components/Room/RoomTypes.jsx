@@ -2,13 +2,12 @@ import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import React from "react";
 import { connect } from "react-redux";
-import { selectRoomTypes } from "../../Reducers/selectors";
 import BookableRoomCard from "./BookableRoomCard";
+import { makeGetRoomTypesWithFilters } from "../../Reducers/selectors";
 
 class RoomTypes extends React.Component {
   render() {
-    const { items, isFetching } = this.props;
-    const roomTypeIds = items.allIds;
+    const { allIds: roomTypeIds, isFetching } = this.props;
     return (
       <Fade in>
         <div>
@@ -33,13 +32,17 @@ class RoomTypes extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  const roomTypes = selectRoomTypes(state);
-  const { isFetching, items } = roomTypes || {
-    isFetching: true,
-    items: {}
+const makeMapStateToProps = () => {
+  const getRoomTypes = makeGetRoomTypesWithFilters();
+  const mapStateToProps = (state, props) => {
+    const roomTypes = getRoomTypes(state, props);
+    const { isFetching, allIds } = roomTypes || {
+      isFetching: true,
+      allIds: {}
+    };
+    return { isFetching, allIds };
   };
-  return { isFetching, items };
+  return mapStateToProps;
 };
 
-export default connect(mapStateToProps)(RoomTypes);
+export default connect(makeMapStateToProps)(RoomTypes);
