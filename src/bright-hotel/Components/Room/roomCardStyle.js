@@ -8,32 +8,14 @@ const styles = theme => ({
     height: "100%"
   },
   imgWrapper: {
-    [theme.breakpoints.up("xs")]: {
-      height: 250
+    [theme.breakpoints.down("sm")]: {
+      height: "40vh"
     },
     [theme.breakpoints.up("sm")]: {
-      height: 300
+      height: "60vh"
     },
     [theme.breakpoints.up("md")]: {
-      height: 500
-    },
-    [theme.breakpoints.up("lg")]: {
-      height: 600
-    },
-    cursor: "pointer",
-    "&:hover": {
-      opacity: "0.7"
-    }
-  },
-  imgWrapperFull: {
-    [theme.breakpoints.up("xs")]: {
-      height: 250
-    },
-    [theme.breakpoints.up("sm")]: {
-      height: 300
-    },
-    [theme.breakpoints.up("md")]: {
-      height: 650
+      height: "85vh"
     },
     cursor: "pointer",
     "&:hover": {

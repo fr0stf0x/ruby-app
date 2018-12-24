@@ -1,5 +1,6 @@
-import fetch from "cross-fetch";
+import axios from "axios";
 import { stringify } from "query-string";
+import { animateScroll as scroll, scroller } from "react-scroll";
 import { API_URL } from "./api";
 
 export const formatMoney = money =>
@@ -14,6 +15,19 @@ export const randomImage = () => {
     require("assets/img/bright-hotel/img_5.jpg"),
     require("assets/img/bright-hotel/img_6.jpg")
   ][Math.floor(Math.random() * 6)];
+};
+
+export const scrollTo = el => {
+  scroller.scrollTo(el, {
+    duration: 400,
+    delay: 0,
+    smooth: "easeInOutQuart",
+    offset: -90
+  });
+};
+
+export const scrollTop = () => {
+  scroll.scrollToTop();
 };
 
 export const mergeObj = (target, ...source) =>
@@ -37,7 +51,8 @@ export const fetchDataFromServer = (
     options
   )}`;
   console.log("url", url);
-  return fetch(url)
-    .then(res => res.json())
+  return axios
+    .get(url)
+    .then(res => res.data)
     .catch(err => console.log(err));
 };

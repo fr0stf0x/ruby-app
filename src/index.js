@@ -6,7 +6,7 @@ import { Route, Router, Switch } from "react-router-dom";
 import indexRoutes from "routes/index.jsx";
 
 import "assets/scss/material-kit-react.css?v=1.3.0";
-import ScrollToTop from "./ScrollToTop";
+import App from "./App";
 import { Provider } from "react-redux";
 import configureStore from "./configureStore";
 
@@ -15,7 +15,7 @@ const store = configureStore();
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <ScrollToTop>
+      <App>
         <Switch>
           {indexRoutes.map((prop, key) => {
             return (
@@ -28,7 +28,7 @@ ReactDOM.render(
             );
           })}
         </Switch>
-      </ScrollToTop>
+      </App>
     </Router>
   </Provider>,
   document.getElementById("root")

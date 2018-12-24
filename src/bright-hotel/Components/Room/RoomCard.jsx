@@ -1,13 +1,10 @@
-import React from "react";
-
 import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-
+import Grid from "@material-ui/core/Grid";
 import classNames from "classnames";
-
+import React from "react";
+import { formatMoney } from "../../Utils/utils";
 import styles, { renderCapacityIcon } from "./roomCardStyle";
-import { formatMoney, randomImage } from "../../Utils/utils";
 
 const RoomCard = props => {
   const {
@@ -16,7 +13,9 @@ const RoomCard = props => {
     fullScreen: isFullScreen,
     classes,
     toggleDialog,
-    bookHandler
+    bookHandler,
+    image,
+    functional
   } = props;
   const shownDescription = isFullScreen
     ? roomType.descr
@@ -32,16 +31,11 @@ const RoomCard = props => {
           alignItems={"center"}
         >
           <Grid item xs={12} md={6}>
-            <div
-              className={
-                (isFullScreen && classes.imgWrapperFull) || classes.imgWrapper
-              }
-              onClick={toggleDialog}
-            >
+            <div className={classes.imgWrapper} onClick={toggleDialog}>
               <img
                 alt={roomType.name}
                 className={classes.media}
-                src={randomImage()}
+                src={image}
                 // src={roomType.image}
               />
             </div>
@@ -103,7 +97,7 @@ const RoomCard = props => {
                     bookHandler();
                   }}
                 >
-                  Check availability
+                  {functional}
                 </Button>
               </div>
               {!isFullScreen && (

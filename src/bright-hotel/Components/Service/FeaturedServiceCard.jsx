@@ -11,7 +11,11 @@ const styles = {
   },
   imgWrapper: {
     padding: "0.2rem",
-    boxShadow: "rgba(0,0,0,0.5) 0px 5px 20px 0px"
+    boxShadow: "rgba(0,0,0,0.5) 0px 5px 20px 0px",
+    cursor: "pointer",
+    "&:hover": {
+      opacity: "0.7"
+    }
   },
   textWrapper: {
     paddingTop: "1%"

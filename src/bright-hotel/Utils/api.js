@@ -42,9 +42,9 @@ export const mapQuery = endpoint => {
   switch (endpoint) {
     case HOTELS:
     case CHECK_AVAILABLE:
-      return ["byHotelName", "allHotelNames"];
+      return { byId: "byHotelName", allIds: "allHotelNames" };
     default:
-      return ["byId", "allIds"];
+      return { byId: "byId", allIds: "allIds" };
   }
 };
 

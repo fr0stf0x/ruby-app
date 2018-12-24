@@ -3,14 +3,14 @@ import { mergeObj } from "../Utils/utils";
 
 export const SHOW_ALL = "show_all";
 export const HOTEL_FILTER_SPECTIFIC = "hotel_specific";
-
 export const ROOMTYPE_FILTER_AVAILABLE = "room_available";
 
 const uiState = (
   state = {
-    hotelFilter: { filter: SHOW_ALL, specific: {} },
-    roomTypeFilter: { filter: SHOW_ALL, specific: {} },
-    dialogOpen: false
+    hotelFilter: { filter: SHOW_ALL, specific: "not_specific" },
+    roomTypeFilter: { filter: SHOW_ALL },
+    bookingBoxOpen: true,
+    cartOpen: false
   },
   action
 ) => {
@@ -19,18 +19,21 @@ const uiState = (
       return mergeObj(state, {
         hotelFilter: {
           filter: action.payload.filter,
-          only: action.payload.specific
+          specific: action.payload.specific
         }
       });
-    case types.SET_ROOMTYPE_FILTER:
+    case types.TOGGLE_ROOMTYPE_FILTER:
       return mergeObj(state, {
         roomTypeFilter: {
-          filter: action.payload.filter,
-          only: action.payload.specific
+          filter: action.payload.filter
         }
       });
-    case types.TOGGLE_SHOW_DATA:
-      return mergeObj(state, { dialogOpen: !state.dialogOpen });
+    case types.TOGGLE_SHOW_BOOKING_BOX:
+      return mergeObj(state, {
+        bookingBoxOpen: !state.bookingBoxOpen
+      });
+    case types.TOGGLE_SHOW_CART:
+      return mergeObj(state, { cartOpen: !state.cartOpen });
     default:
       return state;
   }

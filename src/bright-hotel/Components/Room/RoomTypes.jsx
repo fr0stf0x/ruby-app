@@ -1,33 +1,46 @@
-import Fade from "@material-ui/core/Fade";
+import { Zoom } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import React from "react";
 import { connect } from "react-redux";
+import {
+  getRoomTypeFilter,
+  makeGetRoomTypesWithFilters
+} from "../../Reducers/selectors";
+import { ROOMTYPE_FILTER_AVAILABLE } from "../../Reducers/Ui";
+import SmallDescription from "../Booking/SmallDescription";
 import BookableRoomCard from "./BookableRoomCard";
-import { makeGetRoomTypesWithFilters } from "../../Reducers/selectors";
 
 class RoomTypes extends React.Component {
   render() {
-    const { allIds: roomTypeIds, isFetching } = this.props;
+    const { allIds: roomTypeIds, isFetching, canBook } = this.props;
     return (
-      <Fade in>
+      <Zoom in style={{ transitionDelay: "100ms" }}>
         <div>
           {isFetching && <h2 align="center">Loading...</h2>}
-          {!isFetching &&
+          {(!isFetching &&
             Array.isArray(roomTypeIds) &&
             roomTypeIds.length > 0 && (
-              <Grid container spacing={16}>
-                {roomTypeIds.map((roomTypeId, key) => (
-                  <Grid item xs={12} key={key}>
-                    <BookableRoomCard
-                      id={roomTypeId}
-                      direction={key % 2 ? "row-reverse" : "row"}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            )}
+              <div>
+                <SmallDescription />
+                <Grid container spacing={16}>
+                  {roomTypeIds.sort().map((roomTypeId, key) => (
+                    <Grid item xs={12} key={key}>
+                      <BookableRoomCard
+                        canBook={canBook(roomTypeId)}
+                        id={roomTypeId}
+                        direction={key % 2 ? "row-reverse" : "row"}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </div>
+            )) || (
+            <div align="center">
+              <h2>No room available</h2>
+            </div>
+          )}
         </div>
-      </Fade>
+      </Zoom>
     );
   }
 }
@@ -38,9 +51,16 @@ const makeMapStateToProps = () => {
     const roomTypes = getRoomTypes(state, props);
     const { isFetching, allIds } = roomTypes || {
       isFetching: true,
-      allIds: {}
+      allIds: []
     };
-    return { isFetching, allIds };
+    const canBook = id =>
+      getRoomTypeFilter(state).filter === ROOMTYPE_FILTER_AVAILABLE &&
+      allIds.includes(id);
+    return {
+      isFetching,
+      allIds,
+      canBook
+    };
   };
   return mapStateToProps;
 };

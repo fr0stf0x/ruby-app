@@ -11,7 +11,7 @@ const configureStore = preloadedState => {
   return createStore(
     BrightHotelApp,
     preloadedState,
-    composeEnhancers(applyMiddleware(thunk, logger))
+    composeEnhancers(applyMiddleware(thunk))
   );
 };
 

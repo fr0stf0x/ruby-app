@@ -18,6 +18,9 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:prettier/recommended"
   ],
+  settings: {
+    react: { version: "16.7.0" }
+  },
   rules: {
     "react/prop-types": [0]
   }

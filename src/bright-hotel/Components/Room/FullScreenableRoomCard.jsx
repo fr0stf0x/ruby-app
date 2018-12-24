@@ -1,12 +1,10 @@
-import React from "react";
-
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-
-import styles from "./roomCardStyle";
+import React from "react";
 import RoomCard from "./RoomCard";
+import styles from "./roomCardStyle";
 
 const FullScreenableRoomCard = props => {
   const {
@@ -15,7 +13,9 @@ const FullScreenableRoomCard = props => {
     direction = "row",
     toggleDialog,
     bookHandler,
-    fullScreen
+    fullScreen,
+    image,
+    functional
   } = props;
 
   const closeDialogButton = (
@@ -26,6 +26,8 @@ const FullScreenableRoomCard = props => {
 
   const roomCard = (
     <RoomCard
+      functional={functional}
+      image={image}
       roomType={roomType}
       classes={classes}
       direction={direction}

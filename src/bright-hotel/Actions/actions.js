@@ -1,8 +1,8 @@
-import types from "./types";
+import { makeGetBookingFields } from "../Reducers/selectors";
+import { ROOMTYPE_FILTER_AVAILABLE, SHOW_ALL } from "../Reducers/Ui";
 import END_POINTS, { mapEndpoint, mapEndpointId, mapQuery } from "../Utils/api";
 import { fetchDataFromServer } from "../Utils/utils";
-import { SHOW_ALL } from "../Reducers/Ui";
-import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
+import types from "./types";
 
 // fields
 const changeFields = fields => {
@@ -12,18 +12,21 @@ const changeFields = fields => {
   };
 };
 
-const shouldChangeFields = (state, fields) => {
-  return !Object.is(state.bookingFields.fields, fields);
+const shouldChangeFields = fields => getState => {
+  return !Object.is(getState().bookingFields.fields, fields);
 };
 
-const changeFieldsAndInvalidateAvailableRooms = fields => (
-  dispatch,
-  getState
-) => {
-  if (shouldChangeFields(getState(), fields)) {
+const changeFieldsIfNeeded = fields => dispatch => {
+  if (shouldChangeFields(fields)) {
     dispatch(invalidateData(END_POINTS.CHECK_AVAILABLE));
-    return dispatch(changeFields(fields));
+    dispatch(changeFields(fields));
   }
+};
+
+const makeCheckForRoomsAvailability = () => dispatch => {
+  dispatch(checkForRoomsAvailability()).then(() => {
+    dispatch(setRoomTypeFilter(ROOMTYPE_FILTER_AVAILABLE));
+  });
 };
 
 // server
@@ -52,20 +55,18 @@ const receiveData = (endpoint, data) => {
 
 const mapDataWithId = (data, endpoint) => {
   return {
-    [mapQuery(endpoint)[0]]: data.reduce((obj, item) => {
+    [mapQuery(endpoint).byId]: data.reduce((obj, item) => {
       obj[item[mapEndpointId(endpoint)]] = item;
       return obj;
     }, {}),
-    [mapQuery(endpoint)[1]]: data.map(item => item[mapEndpointId(endpoint)])
+    [mapQuery(endpoint).allIds]: data.map(item => item[mapEndpointId(endpoint)])
   };
 };
 
 const fetchData = (endpoint, queryParams) => dispatch => {
   dispatch(requestData(endpoint));
   return fetchDataFromServer(endpoint, queryParams)
-    .then(res => {
-      dispatch(receiveData(endpoint, res));
-    })
+    .then(res => dispatch(receiveData(endpoint, res)))
     .catch(err => {
       dispatch(invalidateData(endpoint, err));
     });
@@ -90,15 +91,20 @@ const getDataIfNeeded = (endpoint, queryParams) => {
   };
 };
 
-const checkForRoomsAvailability = bookingFields => dispatch =>
-  dispatch(getDataIfNeeded(END_POINTS.CHECK_AVAILABLE, bookingFields));
+const checkForRoomsAvailability = () => (dispatch, getState) => {
+  const query = makeGetBookingFields()(getState());
+  return dispatch(getDataIfNeeded(END_POINTS.CHECK_AVAILABLE, query));
+};
 
 // cart
 
-const addRoomToCart = roomId => {
+const addRoomToCart = ({ roomTypeId, hotelName = "" }) => {
   return {
     type: types.ADD_ROOM_TO_CART,
-    payload: { roomId }
+    payload: {
+      roomTypeId,
+      hotelName
+    }
   };
 };
 
@@ -109,10 +115,15 @@ const addServiceToCart = serviceId => {
   };
 };
 
-const toggleRoomDetailDialog = id => {
+const toggleShowCart = () => {
   return {
-    type: types.TOGGLE_SHOW_DATA,
-    payload: { id }
+    type: types.TOGGLE_SHOW_CART
+  };
+};
+
+const toogleBookingBox = () => {
+  return {
+    type: types.TOGGLE_SHOW_BOOKING_BOX
   };
 };
 
@@ -123,28 +134,29 @@ const setHotelFilter = ({ filter = SHOW_ALL, specific }) => {
   };
 };
 
-const setRoomTypeFilter = (filter = SHOW_ALL) => {
+const setRoomTypeFilter = filter => {
   return {
-    type: types.SET_ROOMTYPE_FILTER,
+    type: types.TOGGLE_ROOMTYPE_FILTER,
     payload: { filter }
   };
 };
 
 const actions = {
   bookingFields: {
-    changeFieldsAndInvalidateAvailableRooms
+    changeFieldsIfNeeded
   },
   server: {
     invalidateData,
     getDataIfNeeded,
-    checkForRoomsAvailability
+    makeCheckForRoomsAvailability
   },
   cart: {
     addServiceToCart,
     addRoomToCart
   },
   ui: {
-    toggleRoomDetailDialog
+    toggleShowCart,
+    toogleBookingBox
   },
   filter: {
     setHotelFilter,

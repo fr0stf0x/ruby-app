@@ -1,6 +1,6 @@
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import classNames from "classnames";
-import moment from "moment";
+
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
@@ -9,7 +9,7 @@ import actions from "../Actions/actions";
 import NavBar from "../Layouts/NavBar";
 import NavHeader from "../Layouts/NavHeader";
 import END_POINTS from "../Utils/api";
-
+import moment from "moment";
 class SearchResult extends React.Component {
   componentDidMount() {
     const { dispatch, bookingFields } = this.props;
@@ -21,7 +21,7 @@ class SearchResult extends React.Component {
         arrive: moment(bookingFields.fields.arrive).format("YYYY-MM-DD"),
         depart: moment(bookingFields.fields.depart).format("YYYY-MM-DD")
       };
-      dispatch(actions.server.checkForRoomsAvailability(query));
+      dispatch(actions.server.checkForRoomsAvailability());
     }
   }
 

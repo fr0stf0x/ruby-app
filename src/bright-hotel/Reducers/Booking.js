@@ -1,8 +1,19 @@
 import types from "../Actions/types";
 import { mergeObj } from "../Utils/utils";
+import moment from "moment";
 
 const initialFields = {
-  isEmpty: true
+  isEmpty: true,
+  fields: {
+    arrive: moment(new Date())
+      .add(1, "day")
+      .toDate(),
+    depart: moment(new Date())
+      .add(2, "day")
+      .toDate(),
+    numOfAdults: "2",
+    numOfChildren: "0"
+  }
 };
 
 const bookingFields = (state = initialFields, action) => {

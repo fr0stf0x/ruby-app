@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-
+import actions from "../../Actions/actions";
+import { getHotelFilter, selectRoomTypeById } from "../../Reducers/selectors";
+import { randomImage, scrollTo } from "../../Utils/utils";
 import FullScreenableRoomCard from "./FullScreenableRoomCard";
-import history from "../../../history";
-import { selectRoomTypeById } from "../../Reducers/selectors";
+import { SHOW_ALL } from "../../Reducers/Ui";
 
 class BookableRoomCard extends React.Component {
   state = {
@@ -11,31 +12,57 @@ class BookableRoomCard extends React.Component {
   };
 
   toggleDialog = () => {
-    this.setState({ dialogOpen: !this.state.dialogOpen });
+    this.setState({
+      dialogOpen: !this.state.dialogOpen
+    });
   };
 
+  image = randomImage();
+
   bookHandler = () => {
-    history.push("/");
+    const { canBook, addRoomToCart, roomType, hotel } = this.props;
+    if (!canBook) {
+      scrollTo("box");
+    } else {
+      addRoomToCart({
+        roomTypeId: roomType.id,
+        hotelName: hotel.filter === SHOW_ALL ? "not_selected" : hotel.specific
+      });
+      this.props.showCart();
+    }
   };
 
   render() {
-    const { roomType, direction = "row" } = this.props;
+    const { roomType, direction = "row", canBook } = this.props;
+    const functional = (canBook && <span>Book now</span>) || (
+      <span>Check availability</span>
+    );
     return (
       <div>
         <FullScreenableRoomCard
+          image={this.image}
           fullScreen={this.state.dialogOpen}
           roomType={roomType}
           direction={direction}
           toggleDialog={this.toggleDialog}
           bookHandler={this.bookHandler}
+          functional={functional}
         />
       </div>
     );
   }
 }
 
-export default connect((state, props) => {
-  return {
-    roomType: selectRoomTypeById(state, props)
-  };
-})(BookableRoomCard);
+export default connect(
+  (state, props) => {
+    return {
+      roomType: selectRoomTypeById(state, props),
+      hotel: getHotelFilter(state)
+    };
+  },
+  dispatch => ({
+    addRoomToCart: roomTypeId =>
+      dispatch(actions.cart.addRoomToCart(roomTypeId)),
+    showCart: () => dispatch(actions.ui.toggleShowCart())
+  })
+)(BookableRoomCard);

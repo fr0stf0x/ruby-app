@@ -1,88 +1,54 @@
-import React from "react";
-
 import Button from "@material-ui/core/Button/Button";
-import Grid from "@material-ui/core/Grid";
+import withStyles from "@material-ui/core/es/styles/withStyles";
 import FormControl from "@material-ui/core/FormControl";
+import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Input from "@material-ui/core/Input";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
-import CloseIcon from "@material-ui/icons/Close";
 import Zoom from "@material-ui/core/Zoom";
-import withStyles from "@material-ui/core/es/styles/withStyles";
-
+import CloseIcon from "@material-ui/icons/Close";
 import moment from "moment";
+import React from "react";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
 import { formatDate, parseDate } from "react-day-picker/moment";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-
 import actions from "../../Actions/actions";
-import productStyle from "../../../assets/jss/material-kit-react/views/landingPageSections/productStyle";
+import functionalBoxStyle from "./functionalBoxStyle";
+import { getBookingFields } from "../../Reducers/selectors";
+import { scrollTo } from "../../Utils/utils";
 
-const styles = {
-  ...productStyle,
-  bookingBox: {
-    background: "linear-gradient(to bottom right, rgb(164, 214, 247), #fccafd)",
-    boxShadow: "rgba(0,0,0,0.45) 0px 5px 30px 0px"
-  },
-  textBold: {
-    fontWeight: "bold"
-  },
-  formControl: {
-    minWidth: "100% !important"
-  },
-  dateSelectField: {
-    width: "100%",
-    fontSize: "0.75em"
-  }
-};
+const styles = functionalBoxStyle;
 
 class BookingBox extends React.Component {
   initialFields = () => ({
-    fields: this.props.bookingFields.fields || {
-      arrive: moment(new Date())
-        .add(1, "day")
-        .toDate(),
-      depart: moment(new Date())
-        .add(2, "day")
-        .toDate(),
-      numOfAdults: "2",
-      numOfChildren: "0"
-    },
+    ...this.props.bookingFields,
     snackbar: {
       open: false
     }
   });
 
-  componentWillUnmount() {
-    this.props.dispatch(
-      actions.bookingFields.changeFieldsAndInvalidateAvailableRooms(
-        this.state.fields
-      )
-    );
-  }
-
   state = this.initialFields();
 
   checkAvailability = () => {
+    const { changeFieldsIfNeeded, checkAvailability } = this.props;
     if (this.validateFields()) {
-      this.props.dispatch(
-        actions.bookingFields.changeFieldsAndInvalidateAvailableRooms(
-          this.state.fields
-        )
-      );
-      this.props.history.push("/search");
+      changeFieldsIfNeeded(this.state.fields);
+      checkAvailability();
+      scrollTo("box");
+      // this.props.history.push("/search");
     }
   };
 
   onCloseSnackBar = () => {
     const defaultFields = this.initialFields();
+    const { fields, snackbar } = this.state;
     this.setState(
       {
         fields: {
-          ...defaultFields.fields,
+          ...fields,
           arrive: defaultFields.fields.arrive,
           depart: defaultFields.fields.depart
         },
@@ -90,16 +56,16 @@ class BookingBox extends React.Component {
           open: false
         }
       },
-      this.state.snackbar.onclose
+      snackbar.onclose
     );
   };
 
-  showSnackBar = (message, callback) => {
+  showSnackBar = (message, onClose) => {
     this.setState({
       snackbar: {
         open: true,
         message,
-        onclose: callback
+        onclose: onClose
       }
     });
   };
@@ -145,20 +111,11 @@ class BookingBox extends React.Component {
     }
   };
 
-  onArriveFieldChange = arrive => {
+  onDateFieldChange = name => date => {
     this.setState({
       fields: {
         ...this.state.fields,
-        arrive
-      }
-    });
-  };
-
-  onDepartFieldChange = depart => {
-    this.setState({
-      fields: {
-        ...this.state.fields,
-        depart
+        [name]: date
       }
     });
   };
@@ -177,8 +134,8 @@ class BookingBox extends React.Component {
         <div className={classes.section}>
           <div className={classes.bookingBox}>
             <Grid
-              style={{ padding: "1rem" }}
               container
+              style={{ padding: "1rem" }}
               spacing={16}
               justify={"center"}
               alignItems={"center"}
@@ -213,7 +170,7 @@ class BookingBox extends React.Component {
                           modifiers,
                           onDayClick: () => this.toField.getInput().focus()
                         }}
-                        onDayChange={this.onArriveFieldChange}
+                        onDayChange={this.onDateFieldChange("arrive")}
                       />
                     </FormControl>
                   </Grid>
@@ -250,7 +207,7 @@ class BookingBox extends React.Component {
                           month: arrive,
                           fromMonth: arrive
                         }}
-                        onDayChange={this.onDepartFieldChange}
+                        onDayChange={this.onDateFieldChange("depart")}
                       />
                     </FormControl>
                   </Grid>
@@ -305,7 +262,7 @@ class BookingBox extends React.Component {
                 </Grid>
               </Grid>
               {/*submit button*/}
-              <Grid item xs={12} sm={12} md={2}>
+              <Grid item xs={12} sm={12} md={3}>
                 <Grid container direction={"column"} alignItems={"center"}>
                   <Grid item>
                     <FormControl className={classes.formControl}>
@@ -353,11 +310,11 @@ class BookingBox extends React.Component {
               <style>
                 {`
       .DayPickerInput-Overlay {
-        position: fixed; !important;
-        top: 50%; !important;
-        left: 50%; !important;
-        z-index: 999; !important;
-        transform: translate(-50%, -50%); !important;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
       }
       .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
         background-color: #f0f8ff;
@@ -384,6 +341,18 @@ class BookingBox extends React.Component {
   }
 }
 
-export default connect(({ bookingFields }) => ({ bookingFields }))(
-  withStyles(styles)(withRouter(BookingBox))
-);
+export default connect(
+  state => ({
+    bookingFields: getBookingFields(state)
+  }),
+  dispatch => {
+    return {
+      changeFieldsIfNeeded: fields =>
+        dispatch(actions.bookingFields.changeFieldsIfNeeded(fields)),
+      checkAvailability: () => {
+        dispatch(actions.server.makeCheckForRoomsAvailability());
+        setTimeout(dispatch(actions.ui.toogleBookingBox()), 1000);
+      }
+    };
+  }
+)(withStyles(styles)(withRouter(BookingBox)));
