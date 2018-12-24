@@ -24,7 +24,12 @@ const changeFieldsIfNeeded = fields => dispatch => {
 };
 
 const makeCheckForRoomsAvailability = () => dispatch => {
-  dispatch(checkForRoomsAvailability()).then(() => {
+  dispatch(checkForRoomsAvailability()).then(res => {
+    dispatch(
+      setHotelFilter({
+        specific: res.payload[mapQuery(END_POINTS.HOTELS).allIds].sort()[0]
+      })
+    );
     dispatch(setRoomTypeFilter(ROOMTYPE_FILTER_AVAILABLE));
   });
 };
@@ -108,6 +113,20 @@ const addRoomToCart = ({ roomTypeId, hotelName = "" }) => {
   };
 };
 
+const changeNumRooms = ({ id, count }) => {
+  return {
+    type: types.CHANGE_NUM_ROOMS,
+    payload: { id, count }
+  };
+};
+
+const changeNumServices = ({ id, count }) => {
+  return {
+    type: types.CHANGE_NUM_SERVICES,
+    payload: { id, count }
+  };
+};
+
 const addServiceToCart = serviceId => {
   return {
     type: types.ADD_SERVICE_TO_CART,
@@ -152,7 +171,9 @@ const actions = {
   },
   cart: {
     addServiceToCart,
-    addRoomToCart
+    addRoomToCart,
+    changeNumRooms,
+    changeNumServices
   },
   ui: {
     toggleShowCart,

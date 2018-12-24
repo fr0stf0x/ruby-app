@@ -4,7 +4,6 @@ import actions from "../../Actions/actions";
 import { getHotelFilter, selectRoomTypeById } from "../../Reducers/selectors";
 import { randomImage, scrollTo } from "../../Utils/utils";
 import FullScreenableRoomCard from "./FullScreenableRoomCard";
-import { SHOW_ALL } from "../../Reducers/Ui";
 
 class BookableRoomCard extends React.Component {
   state = {
@@ -26,7 +25,7 @@ class BookableRoomCard extends React.Component {
     } else {
       addRoomToCart({
         roomTypeId: roomType.id,
-        hotelName: hotel.filter === SHOW_ALL ? "not_selected" : hotel.specific
+        hotelName: hotel.specific
       });
       this.props.showCart();
     }

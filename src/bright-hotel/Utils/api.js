@@ -3,8 +3,8 @@ export const API_URL =
   // "https://5bfd126b827c3800139ae8c7.mockapi.io/js-funds";
   "http://localhost:8080/api";
 
-const ALL_ROOM_TYPES = "rooms/roomTypes";
-const CHECK_AVAILABLE = "rooms/checkAvailable";
+const ALL_ROOM_TYPES = "roomTypes";
+const CHECK_AVAILABLE = "availableRoomTypes";
 const BOOKING = "bookings";
 const SERVICES = "services";
 const HOTELS = "hotels";
@@ -22,7 +22,7 @@ export const mapEndpoint = endpoint => {
     case CHECK_AVAILABLE:
       return "availability";
     case ALL_ROOM_TYPES:
-      return "allRoomTypes";
+      return "rooms";
     default:
       return endpoint;
   }

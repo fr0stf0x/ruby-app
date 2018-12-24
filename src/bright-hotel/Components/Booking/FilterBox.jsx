@@ -26,7 +26,6 @@ const styles = functionalBoxStyle;
 class FilterBox extends React.Component {
   setRoomTypeFilter = event => {
     this.props.showAllRooms(event.target.value);
-    scrollTo("rooms");
   };
 
   reCheckAvailability = () => {
@@ -50,19 +49,19 @@ class FilterBox extends React.Component {
     scrollTo("rooms");
   };
 
-  getHotel = () => {
-    const { hotelFilter } = this.props;
-    if (hotelFilter.filter === SHOW_ALL) {
-      return SHOW_ALL;
-    }
-    return hotelFilter.specific;
-  };
-
   setAllHotel = () => this.props.setHotelFilter(SHOW_ALL);
 
   render() {
-    const { classes, hotels, roomTypeFilter, allRoomsAvailable } = this.props;
+    const {
+      classes,
+      hotels,
+      roomTypeFilter,
+      hotelFilter,
+      allRoomsAvailable
+    } = this.props;
     const hotelQuery = mapQuery(END_POINTS.HOTELS);
+    const hotel = hotelFilter.specific;
+    const radioDisabled = roomTypeFilter.filter === SHOW_ALL;
     return (
       <Zoom in style={{ transitionDelay: "100ms" }}>
         <div className={classes.section}>
@@ -128,17 +127,13 @@ class FilterBox extends React.Component {
                   <Grid item xs={12}>
                     <Grid container justify="center" alignItems={"center"}>
                       <Grid item>
-                        <RadioGroup
-                          row
-                          value={this.getHotel()}
-                          onChange={this.setHotel}
-                        >
-                          <FormControlLabel
+                        <RadioGroup row value={hotel} onChange={this.setHotel}>
+                          {/* <FormControlLabel
                             value={SHOW_ALL}
                             className={classes.radioWrapper}
                             control={<Radio className={classes.radio} />}
                             label="All"
-                          />
+                          /> */}
                           {hotels[hotelQuery.allIds]
                             .sort()
                             .map((hotelName, idx) => (
@@ -146,6 +141,7 @@ class FilterBox extends React.Component {
                                 className={classes.radioWrapper}
                                 key={idx}
                                 value={hotelName}
+                                disabled={radioDisabled}
                                 control={<Radio className={classes.radio} />}
                                 label={hotelName}
                               />
@@ -187,8 +183,8 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
   () => {
+    const allRoomsAvailable = areAllRoomsAvailable();
     return state => {
-      const allRoomsAvailable = areAllRoomsAvailable();
       return {
         roomTypeFilter: getRoomTypeFilter(state),
         hotelFilter: getHotelFilter(state),

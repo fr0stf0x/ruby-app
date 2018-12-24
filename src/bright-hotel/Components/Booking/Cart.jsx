@@ -3,7 +3,8 @@ import { Button, withStyles } from "@material-ui/core/es";
 import React from "react";
 import { connect } from "react-redux";
 import { getCart, getHotelFilter } from "../../Reducers/selectors";
-import RoomCartItem from "./RoomCartItem";
+import CartItem from "./CartItem";
+import END_POINTS from "../../Utils/api";
 
 const styles = theme => ({
   container: {
@@ -56,7 +57,7 @@ class Cart extends React.Component {
               <div className={classes.cartItems}>
                 {cart.rooms.map((room, key) => (
                   <div className={classes.cartItem} key={key}>
-                    <RoomCartItem id={room.id} at={room.at} />
+                    <CartItem type={END_POINTS.ALL_ROOM_TYPES} id={room.id} />
                   </div>
                 ))}
               </div>

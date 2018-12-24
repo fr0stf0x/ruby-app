@@ -1,17 +1,18 @@
 import moment from "moment";
 import { createSelector } from "reselect";
 import END_POINTS, { mapEndpoint, mapQuery } from "../Utils/api";
-import {
-  ROOMTYPE_FILTER_AVAILABLE,
-  SHOW_ALL,
-  HOTEL_FILTER_SPECTIFIC
-} from "./Ui";
+import { ROOMTYPE_FILTER_AVAILABLE, SHOW_ALL } from "./Ui";
 
 const getAllRoomTypes = state =>
   state.data[mapEndpoint(END_POINTS.ALL_ROOM_TYPES)];
 
 export const selectRoomTypeById = (state, props) =>
   getAllRoomTypes(state).byId[props.id];
+
+const getAllServices = state => state.data[mapEndpoint(END_POINTS.SERVICES)];
+
+export const selectServiceById = (state, props) =>
+  getAllServices(state).byId[props.id];
 
 const getAvailability = state =>
   state.data[mapEndpoint(END_POINTS.CHECK_AVAILABLE)];
@@ -26,8 +27,28 @@ export const getBookingFields = state => state.bookingFields;
 
 export const getCart = state => state.cart;
 
-export const makeGetBookingFields = () => {
-  return createSelector([getBookingFields], bookingFields => {
+export const getCartItem = (state, props) => ({
+  item: state.data[mapEndpoint(props.type)].byId[props.id],
+  type: props.type
+});
+
+export const makeGetCartItem = () =>
+  createSelector([getCart, getCartItem], (cart, cartItem) => {
+    console.log(
+      cart[mapEndpoint(cartItem.type)].find(
+        item => item.id === cartItem.item.id
+      )
+    );
+    return {
+      item: cartItem.item,
+      count: cart[mapEndpoint(cartItem.type)].find(
+        item => item.id === cartItem.item.id
+      ).count
+    };
+  });
+
+export const makeGetBookingFields = () =>
+  createSelector([getBookingFields], bookingFields => {
     const { fields } = bookingFields;
     return {
       ...fields,
@@ -35,9 +56,8 @@ export const makeGetBookingFields = () => {
       depart: moment(fields.depart).format("YYYY-MM-DD")
     };
   });
-};
 
-const createHotelDescription = hotel => {
+export const createHotelDescription = hotel => {
   const {
     hotelName,
     apartmentNum,
@@ -56,13 +76,12 @@ export const makeGetDescription = () => {
   return createSelector(
     [getHotels, getHotelFilter, getRoomTypeFilter],
     (hotels, hotelFilter, roomTypeFilter) => {
-      if (hotelFilter.filter === HOTEL_FILTER_SPECTIFIC) {
-        const query = mapQuery(END_POINTS.HOTELS);
-        return createHotelDescription(hotels[query.byId][hotelFilter.specific]);
-      }
-      return roomTypeFilter.filter === SHOW_ALL
-        ? "All rooms"
-        : "Available for your need";
+      return (
+        (roomTypeFilter.filter === SHOW_ALL && "All rooms") ||
+        createHotelDescription(
+          hotels[mapQuery(END_POINTS.HOTELS).byId][hotelFilter.specific]
+        )
+      );
     }
   );
 };
@@ -86,31 +105,21 @@ export const areAllRoomsAvailable = () =>
 
 export const makeGetRoomTypesWithFilters = () => {
   return createSelector(
-    [getAllRoomTypes, getAvailability, getRoomTypeFilter, getHotelFilter],
-    (allRoomTypes, availabilities, roomTypeFilter, hotelFilter) =>
-      roomTypeFilter.filter === ROOMTYPE_FILTER_AVAILABLE
-        ? {
-            isFetching: false,
-            allIds: (() => {
-              const query = mapQuery(END_POINTS.CHECK_AVAILABLE);
-              if (hotelFilter.filter === SHOW_ALL) {
-                let result = [];
-                availabilities[query.allIds].forEach(hotelName => {
-                  availabilities[query.byId][hotelName].rooms.allIds.forEach(
-                    roomTypeId => {
-                      if (!result.includes(roomTypeId)) {
-                        result.push(roomTypeId);
-                      }
-                    }
-                  );
-                });
-                return result;
-              }
-              return availabilities[query.byId][hotelFilter.specific].rooms
-                .allIds;
-            })()
-          }
-        : allRoomTypes
+    [
+      getAllRoomTypes,
+      getAvailability,
+      getCart,
+      getRoomTypeFilter,
+      getHotelFilter
+    ],
+    (allRoomTypes, availabilities, cart, roomTypeFilter, hotelFilter) =>
+      (roomTypeFilter.filter === ROOMTYPE_FILTER_AVAILABLE && {
+        isFetching: false,
+        allIds: availabilities[mapQuery(END_POINTS.CHECK_AVAILABLE).byId][
+          hotelFilter.specific
+        ].rooms.allIds.filter(id => !cart.rooms.some(room => room.id === id))
+      }) ||
+      allRoomTypes
   );
 };
 

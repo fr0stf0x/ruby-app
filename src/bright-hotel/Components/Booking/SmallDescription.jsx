@@ -1,12 +1,10 @@
+import { withStyles } from "@material-ui/core/es";
 import React from "react";
 import { connect } from "react-redux";
 import {
-  makeGetDescription,
   areAllRoomsAvailable,
-  getHotelFilter
+  makeGetDescription
 } from "../../Reducers/selectors";
-import { withStyles } from "@material-ui/core/es";
-import { SHOW_ALL } from "../../Reducers/Ui";
 
 const styles = theme => ({
   description: {
@@ -17,14 +15,15 @@ const styles = theme => ({
 });
 
 const SmallDescription = props => {
-  const { description, classes, allRoomsAvailable, hotelFilter } = props;
+  const { description, classes, allRoomsAvailable } = props;
 
   return (
     <div>
       <h2 className={classes.description} align="center">
-        {(hotelFilter.filter === SHOW_ALL &&
-          allRoomsAvailable && <span>All rooms are available</span>) ||
-          description}
+        {allRoomsAvailable && <div>All rooms are available</div>}
+      </h2>
+      <h2 className={classes.description} align="center">
+        {description}
       </h2>
     </div>
   );
@@ -36,7 +35,6 @@ export default connect(() => {
   return state => {
     const description = getDescription(state);
     return {
-      hotelFilter: getHotelFilter(state),
       allRoomsAvailable: allRoomsAvailable(state),
       description
     };
