@@ -16,6 +16,7 @@ const CHECK_AVAILABILITY = "check_rooms";
 // const SET_CURRENT_ROOM = "set_current_room";
 const TOGGLE_SHOW_CART = "toggle_cart";
 const TOGGLE_SHOW_BOOKING_BOX = "toggle_booking_box";
+const TOGGLE_SNACKBAR = "toggle_snackbar";
 
 const SET_HOTEL_FILTER = "set_hotel_filter";
 const TOGGLE_ROOMTYPE_FILTER = "toggle_roomtype_filter";
@@ -38,6 +39,7 @@ const types = {
 
   TOGGLE_SHOW_CART,
   TOGGLE_SHOW_BOOKING_BOX,
+  TOGGLE_SNACKBAR,
 
   SET_HOTEL_FILTER,
   TOGGLE_ROOMTYPE_FILTER

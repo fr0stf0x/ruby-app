@@ -33,6 +33,9 @@ class App extends React.Component {
     );
     this.props.dispatch(actions.server.getDataIfNeeded(END_POINTS.HOTELS));
     this.props.dispatch(actions.server.getDataIfNeeded(END_POINTS.SERVICES));
+    this.props.dispatch(
+      actions.server.getDataIfNeeded(END_POINTS.SERVICE_TYPES)
+    );
   }
 
   showCart = () => {

@@ -140,9 +140,19 @@ const toggleShowCart = () => {
   };
 };
 
-const toogleBookingBox = () => {
+const toggleBookingBox = () => {
   return {
     type: types.TOGGLE_SHOW_BOOKING_BOX
+  };
+};
+
+const toggleSnackBar = ({ message, onClose }) => {
+  return {
+    type: types.TOGGLE_SNACKBAR,
+    payload: {
+      message,
+      onClose
+    }
   };
 };
 
@@ -177,7 +187,8 @@ const actions = {
   },
   ui: {
     toggleShowCart,
-    toogleBookingBox
+    toggleSnackBar,
+    toggleBookingBox
   },
   filter: {
     setHotelFilter,

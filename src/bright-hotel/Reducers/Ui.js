@@ -1,17 +1,25 @@
 import types from "../Actions/types";
 import { mergeObj } from "../Utils/utils";
+import actions from "../Actions/actions";
 
 export const SHOW_ALL = "show_all";
 export const HOTEL_FILTER_SPECTIFIC = "hotel_specific";
 export const ROOMTYPE_FILTER_AVAILABLE = "room_available";
 
 const uiState = (
-  state = {
-    hotelFilter: { filter: SHOW_ALL, specific: "not_specific" },
-    roomTypeFilter: { filter: SHOW_ALL },
-    bookingBoxOpen: true,
-    cartOpen: false
-  },
+  state = (function() {
+    let state = {
+      hotelFilter: { filter: SHOW_ALL, specific: "not_specific" },
+      roomTypeFilter: { filter: SHOW_ALL },
+      bookingBoxOpen: true,
+      cartOpen: false,
+      snackBar: {
+        open: false,
+        onClose: actions.ui.toggleSnackBar
+      }
+    };
+    return state;
+  })(),
   action
 ) => {
   switch (action.type) {
@@ -34,6 +42,15 @@ const uiState = (
       });
     case types.TOGGLE_SHOW_CART:
       return mergeObj(state, { cartOpen: !state.cartOpen });
+    case types.TOGGLE_SNACKBAR:
+      return mergeObj(
+        state,
+        mergeObj(state.snackBar, {
+          open: !state.snackBar.open,
+          message: action.payload.message,
+          onClose: action.payload.onClose
+        })
+      );
     default:
       return state;
   }

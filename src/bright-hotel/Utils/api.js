@@ -7,6 +7,7 @@ const ALL_ROOM_TYPES = "roomTypes";
 const CHECK_AVAILABLE = "availableRoomTypes";
 const BOOKING = "bookings";
 const SERVICES = "services";
+const SERVICE_TYPES = "serviceTypes";
 const HOTELS = "hotels";
 
 const END_POINTS = {
@@ -14,7 +15,8 @@ const END_POINTS = {
   CHECK_AVAILABLE,
   BOOKING,
   SERVICES,
-  HOTELS
+  HOTELS,
+  SERVICE_TYPES
 };
 
 export const mapEndpoint = endpoint => {

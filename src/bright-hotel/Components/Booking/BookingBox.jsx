@@ -16,9 +16,9 @@ import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import actions from "../../Actions/actions";
-import functionalBoxStyle from "./functionalBoxStyle";
 import { getBookingFields } from "../../Reducers/selectors";
 import { scrollTo } from "../../Utils/utils";
+import functionalBoxStyle from "./functionalBoxStyle";
 
 const styles = functionalBoxStyle;
 
@@ -38,7 +38,6 @@ class BookingBox extends React.Component {
       changeFieldsIfNeeded(this.state.fields);
       checkAvailability();
       scrollTo("box");
-      // this.props.history.push("/search");
     }
   };
 
@@ -351,7 +350,7 @@ export default connect(
         dispatch(actions.bookingFields.changeFieldsIfNeeded(fields)),
       checkAvailability: () => {
         dispatch(actions.server.makeCheckForRoomsAvailability());
-        setTimeout(dispatch(actions.ui.toogleBookingBox()), 1000);
+        setTimeout(dispatch(actions.ui.toggleBookingBox()), 1000);
       }
     };
   }

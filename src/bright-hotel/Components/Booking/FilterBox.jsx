@@ -176,7 +176,7 @@ class FilterBox extends React.Component {
 const mapDispatchToProps = dispatch => {
   return {
     showAllRooms: filter => dispatch(actions.filter.setRoomTypeFilter(filter)),
-    toggleBookingBox: () => dispatch(actions.ui.toogleBookingBox()),
+    toggleBookingBox: () => dispatch(actions.ui.toggleBookingBox()),
     setHotelFilter: filter => dispatch(actions.filter.setHotelFilter(filter))
   };
 };

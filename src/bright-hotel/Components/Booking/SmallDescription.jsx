@@ -19,12 +19,10 @@ const SmallDescription = props => {
 
   return (
     <div>
-      <h2 className={classes.description} align="center">
+      <h3 className={classes.description} align="center">
         {allRoomsAvailable && <div>All rooms are available</div>}
-      </h2>
-      <h2 className={classes.description} align="center">
         {description}
-      </h2>
+      </h3>
     </div>
   );
 };

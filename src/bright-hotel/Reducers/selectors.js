@@ -34,11 +34,6 @@ export const getCartItem = (state, props) => ({
 
 export const makeGetCartItem = () =>
   createSelector([getCart, getCartItem], (cart, cartItem) => {
-    console.log(
-      cart[mapEndpoint(cartItem.type)].find(
-        item => item.id === cartItem.item.id
-      )
-    );
     return {
       item: cartItem.item,
       count: cart[mapEndpoint(cartItem.type)].find(
