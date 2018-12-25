@@ -4,12 +4,10 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   FormControlLabel,
   Radio,
   RadioGroup,
   TextField,
-  withMobileDialog,
   withStyles
 } from "@material-ui/core/es";
 import React from "react";
@@ -32,7 +30,13 @@ const styles = theme => ({
     padding: "0 5px 0 0"
   },
   radioWrapper: {
-    margin: "0 5px 0 0"
+    margin: "0 10px 0 0"
+  },
+  content: {
+    [theme.breakpoints.up("md")]: {
+      paddingLeft: "5vw",
+      paddingRight: "5vw"
+    }
   }
 });
 
@@ -84,14 +88,17 @@ class CheckoutForm extends React.Component {
         <h2 className={classes.title} align="center">
           Your information
         </h2>
-        <DialogContent style={{ paddingTop: "5vh" }}>
+        <DialogContent
+          className={classes.content}
+          style={{ paddingTop: "5vh" }}
+        >
           <Grid container alignItems="center" spacing={16}>
             {/* dob */}
             <Grid item xs={12} sm={6}>
               <Grid container alignItems="center" spacing={16}>
                 <Grid item xs={4}>
                   <span style={{ fontWeight: "400", color: "#817a6b" }}>
-                    Day of birth
+                    Day of birth *
                   </span>
                 </Grid>
                 <Grid item xs={8}>
@@ -114,7 +121,7 @@ class CheckoutForm extends React.Component {
               <Grid container alignItems="center" spacing={16}>
                 <Grid item xs={4}>
                   <span style={{ fontWeight: "400", color: "#817a6b" }}>
-                    Gender
+                    Gender *
                   </span>
                 </Grid>
                 <Grid item xs={8}>
@@ -203,13 +210,16 @@ class CheckoutForm extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button
+            size="large"
             variant={"contained"}
             color="secondary"
             onClick={this.checkOut}
           >
             Checkout
           </Button>
-          <Button onClick={this.closeDialog}>Cancel</Button>
+          <Button size="large" onClick={this.closeDialog}>
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     );

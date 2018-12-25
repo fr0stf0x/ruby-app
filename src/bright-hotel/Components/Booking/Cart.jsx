@@ -36,7 +36,7 @@ const styles = theme => ({
     padding: "0.5rem",
     [theme.breakpoints.down("sm")]: {
       maxHeight: "40vh",
-      width: "65vw"
+      width: "80vw"
     },
     // [theme.breakpoints.down("xs")]: {
     //   padding: 0
@@ -59,7 +59,7 @@ const styles = theme => ({
   title: {
     fontWeight: "400",
     [theme.breakpoints.down("sm")]: {
-      fontSize: "16px"
+      fontSize: "18px"
     }
   },
   extraPaper: {
@@ -145,7 +145,7 @@ class Cart extends React.Component {
                       <div align="right" className={classes.extraButtons}>
                         <Button
                           variant="contained"
-                          color="secondary"
+                          color="primary"
                           onClick={this.closeCartAndScrollToServices}
                         >
                           Yes, please
