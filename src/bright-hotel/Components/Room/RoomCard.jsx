@@ -54,7 +54,7 @@ const RoomCard = props => {
               <div
                 className={classNames(classes.money, classes.marginVertical)}
               >
-                <b>${formatMoney(roomType.price)}</b>
+                <b>{formatMoney(roomType.price)}</b>
                 <sub>/night</sub>
               </div>
               <div

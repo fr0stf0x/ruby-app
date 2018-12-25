@@ -1,5 +1,6 @@
 import { FormControl, Input } from "@material-ui/core";
-import { Grid, withStyles } from "@material-ui/core/es";
+import { Grid, IconButton, withStyles } from "@material-ui/core/es";
+import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
 import { connect } from "react-redux";
 import actions from "../../Actions/actions";
@@ -14,13 +15,24 @@ const styles = {
 };
 
 class CartItem extends React.Component {
-  onNumChange = id => event => {
+  onNumChange = (id, type) => event => {
     const { dispatch } = this.props;
-    dispatch(actions.cart.changeNumRooms({ id, count: event.target.value }));
+    (type === "rooms" &&
+      dispatch(
+        actions.cart.changeNumRooms({ id, count: event.target.value })
+      )) ||
+      dispatch(
+        actions.cart.changeNumServices({ id, count: event.target.value })
+      );
+  };
+
+  clearItem = () => {
+    const { dispatch, cartItem, type } = this.props;
+    dispatch(actions.cart.removeItemFromCart(cartItem.item.id, type));
   };
 
   render() {
-    const { cartItem, classes } = this.props;
+    const { cartItem, classes, type } = this.props;
     const item = cartItem.item;
     const count = cartItem.count;
     return (
@@ -30,9 +42,9 @@ class CartItem extends React.Component {
           justify={"center"}
           alignContent={"center"}
           alignItems={"center"}
-          spacing={16}
+          spacing={8}
         >
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <span>{item.name}</span>
           </Grid>
           <Grid item xs={2}>
@@ -40,13 +52,30 @@ class CartItem extends React.Component {
               <Input
                 type={"number"}
                 value={count}
-                onChange={this.onNumChange(item.id)}
-                inputProps={{ min: "0", max: "10", step: "1" }}
+                onChange={this.onNumChange(item.id, type)}
+                inputProps={{ min: "1", max: "10", step: "1" }}
               />
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
-            {formatMoney(item.price)}$
+          <Grid item xs={6}>
+            <Grid
+              container
+              justify={"space-between"}
+              alignContent={"center"}
+              alignItems={"center"}
+            >
+              <Grid item>{formatMoney(item.price * count)}</Grid>
+              <Grid item>
+                <IconButton
+                  key="close"
+                  aria-label="Close"
+                  color="inherit"
+                  onClick={this.clearItem}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
         <span />

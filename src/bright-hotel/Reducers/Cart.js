@@ -9,13 +9,12 @@ const rooms = (state = [], action) => {
         ...state,
         {
           id: action.payload.roomTypeId,
-          at: action.payload.hotelName,
           count: 1
         }
       ];
     case types.REMOVE_ROOM_FROM_CART:
       // eslint-disable-next-line no-case-declarations
-      let itemIdx = state.findIndex(room => room.id === action.payload.roomId);
+      let itemIdx = state.findIndex(room => room.id === action.payload.id);
       return [...state.slice(0, itemIdx), ...state.slice(itemIdx + 1)];
     case types.CHANGE_NUM_ROOMS:
       return mergeItemInArray(state, action.payload.id, item =>
@@ -29,15 +28,39 @@ const rooms = (state = [], action) => {
 const services = (state = [], action) => {
   switch (action.type) {
     case types.ADD_SERVICE_TO_CART:
-      return [...state, action.payload.serviceId];
+      return [
+        ...state,
+        {
+          id: action.payload.serviceId,
+          count: 1
+        }
+      ];
     case types.REMOVE_SERVICE_FROM_CART:
-      return state.slice(
-        0,
-        state.findIndex(service => service.serviceId === action.serviceId)
+      console.log(state);
+      console.log(action.payload.id);
+      // eslint-disable-next-line no-case-declarations
+      let itemIdx = state.findIndex(
+        service => service.id === action.payload.id
+      );
+      console.log("item idx", itemIdx);
+      console.log([...state.slice(0, itemIdx), ...state.slice(itemIdx + 1)]);
+      return [...state.slice(0, itemIdx), ...state.slice(itemIdx + 1)];
+    case types.CHANGE_NUM_SERVICES:
+      return mergeItemInArray(state, action.payload.id, item =>
+        mergeObj(item, { count: action.payload.count })
       );
     default:
       return state;
   }
 };
 
-export default combineReducers({ rooms, services });
+const info = (state = {}, action) => {
+  switch (action.type) {
+    case types.SET_CART_AT:
+      return mergeObj(state, { at: action.payload.at });
+    default:
+      return state;
+  }
+};
+
+export default combineReducers({ rooms, services, info });

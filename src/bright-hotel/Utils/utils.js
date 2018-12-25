@@ -4,7 +4,8 @@ import { animateScroll as scroll, scroller } from "react-scroll";
 import { API_URL } from "./api";
 
 export const formatMoney = money =>
-  (+money / 23000).toFixed(1).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+  (money === 0 && "FREE") ||
+  (+money / 23000).toFixed(1).replace(/\d(?=(\d{3})+\.)/g, "$&,") + "$";
 
 export const randomImage = () => {
   return [
@@ -50,9 +51,8 @@ export const fetchDataFromServer = (
   let url = `${API_URL}/${endpoint}?${stringify(queryParams)}&${stringify(
     options
   )}`;
-  console.log("url", url);
-  return axios
-    .get(url)
-    .then(res => res.data)
-    .catch(err => console.log(err));
+  return axios.get(url).then(res => res.data);
 };
+
+export const postData = (data, endpoint) =>
+  axios.post(`${API_URL}/${endpoint}`).then(res => res.data);

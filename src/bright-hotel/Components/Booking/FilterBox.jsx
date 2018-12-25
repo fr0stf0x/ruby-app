@@ -128,12 +128,6 @@ class FilterBox extends React.Component {
                     <Grid container justify="center" alignItems={"center"}>
                       <Grid item>
                         <RadioGroup row value={hotel} onChange={this.setHotel}>
-                          {/* <FormControlLabel
-                            value={SHOW_ALL}
-                            className={classes.radioWrapper}
-                            control={<Radio className={classes.radio} />}
-                            label="All"
-                          /> */}
                           {hotels[hotelQuery.allIds]
                             .sort()
                             .map((hotelName, idx) => (

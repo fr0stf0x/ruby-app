@@ -80,8 +80,12 @@ class Header extends React.Component {
       [classes.fixed]: fixed
     });
     const brandComponent = (
-      <Button component={Link} color='transparent' to={"/"}
-              className={classes.title}>
+      <Button
+        component={Link}
+        color="transparent"
+        to={"/"}
+        className={classes.title}
+      >
         <div style={{ fontWeight: "400", fontSize: "20px" }}>{brand}</div>
       </Button>
     );
@@ -107,7 +111,7 @@ class Header extends React.Component {
               aria-label="open drawer"
               onClick={this.handleDrawerToggle}
             >
-              <Menu/>
+              <Menu />
             </IconButton>
           </Hidden>
         </Toolbar>

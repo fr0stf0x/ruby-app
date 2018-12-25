@@ -23,6 +23,10 @@ const bookingFields = (state = initialFields, action) => {
         fields: action.payload.fields,
         isEmpty: false
       });
+    case types.CHANGE_CUSTOMER_FIELDS:
+      return mergeObj(state, {
+        customerInfo: action.payload.fields
+      });
     default:
       return state;
   }

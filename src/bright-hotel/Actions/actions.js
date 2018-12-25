@@ -1,7 +1,7 @@
 import { makeGetBookingFields } from "../Reducers/selectors";
 import { ROOMTYPE_FILTER_AVAILABLE, SHOW_ALL } from "../Reducers/Ui";
 import END_POINTS, { mapEndpoint, mapEndpointId, mapQuery } from "../Utils/api";
-import { fetchDataFromServer } from "../Utils/utils";
+import { fetchDataFromServer, scrollTo } from "../Utils/utils";
 import types from "./types";
 
 // fields
@@ -10,6 +10,19 @@ const changeFields = fields => {
     type: types.CHANGE_FIELDS,
     payload: { fields }
   };
+};
+
+const changeCustomerInfo = fields => {
+  return {
+    type: types.CHANGE_CUSTOMER_FIELDS,
+    payload: { fields }
+  };
+};
+
+const changeCustomerInfoIfNeeded = fields => (dispatch, getState) => {
+  if ((!Object.is(getState().bookingFields.customerInfo), fields)) {
+    dispatch(changeCustomerInfo(fields));
+  }
 };
 
 const shouldChangeFields = fields => getState => {
@@ -21,17 +34,6 @@ const changeFieldsIfNeeded = fields => dispatch => {
     dispatch(invalidateData(END_POINTS.CHECK_AVAILABLE));
     dispatch(changeFields(fields));
   }
-};
-
-const makeCheckForRoomsAvailability = () => dispatch => {
-  dispatch(checkForRoomsAvailability()).then(res => {
-    dispatch(
-      setHotelFilter({
-        specific: res.payload[mapQuery(END_POINTS.HOTELS).allIds].sort()[0]
-      })
-    );
-    dispatch(setRoomTypeFilter(ROOMTYPE_FILTER_AVAILABLE));
-  });
 };
 
 // server
@@ -74,6 +76,8 @@ const fetchData = (endpoint, queryParams) => dispatch => {
     .then(res => dispatch(receiveData(endpoint, res)))
     .catch(err => {
       dispatch(invalidateData(endpoint, err));
+      dispatch(showSnackBar("Can not get data, check your connection"));
+      return Promise.reject(err);
     });
 };
 
@@ -101,14 +105,52 @@ const checkForRoomsAvailability = () => (dispatch, getState) => {
   return dispatch(getDataIfNeeded(END_POINTS.CHECK_AVAILABLE, query));
 };
 
+const makeCheckForRoomsAvailability = () => dispatch =>
+  dispatch(checkForRoomsAvailability()).then(res => {
+    dispatch(
+      setHotelFilter({
+        specific: res.payload[mapQuery(END_POINTS.HOTELS).allIds].sort()[0]
+      })
+    );
+    dispatch(setRoomTypeFilter(ROOMTYPE_FILTER_AVAILABLE));
+    return res;
+  });
+
 // cart
 
-const addRoomToCart = ({ roomTypeId, hotelName = "" }) => {
+const setCartAt = at => {
+  return {
+    type: types.SET_CART_AT,
+    payload: {
+      at
+    }
+  };
+};
+
+const makeAddRoomToCart = ({ roomTypeId, hotelName }) => (
+  dispatch,
+  getState
+) => {
+  const cart = getState().cart;
+  if (cart.rooms.length === 0) {
+    dispatch(setCartAt(hotelName));
+  }
+  if (cart.info.at && cart.info.at !== hotelName) {
+    return dispatch(
+      showSnackBar("You can not book rooms in different hotels", () =>
+        dispatch(toggleShowCart())
+      )
+    );
+  }
+  dispatch(addRoomToCart({ roomTypeId }));
+  dispatch(toggleShowCart());
+};
+
+const addRoomToCart = ({ roomTypeId }) => {
   return {
     type: types.ADD_ROOM_TO_CART,
     payload: {
-      roomTypeId,
-      hotelName
+      roomTypeId
     }
   };
 };
@@ -127,10 +169,50 @@ const changeNumServices = ({ id, count }) => {
   };
 };
 
+const makeAddServiceToCart = serviceId => (dispatch, getState) => {
+  const cart = getState().cart;
+  if (cart.rooms.length === 0) {
+    return dispatch(
+      showSnackBar("You haven't booked a room yet!", () => {
+        scrollTo("box");
+      })
+    );
+  }
+  dispatch(addServiceToCart(serviceId));
+  dispatch(toggleShowCart());
+};
+
 const addServiceToCart = serviceId => {
   return {
     type: types.ADD_SERVICE_TO_CART,
     payload: { serviceId }
+  };
+};
+
+const removeItemFromCart = (id, type) => dispatch => {
+  dispatch(removeItem({ id, type }));
+  dispatch(afterRemove());
+};
+
+const afterRemove = () => (dispatch, getState) => {
+  const cart = getState().cart;
+  if (cart.rooms.length === 0) {
+    cart.services.forEach(service =>
+      dispatch(removeItem({ id: service.id, type: "services" }))
+    );
+    dispatch(toggleShowCart());
+    dispatch(setCartAt());
+  }
+};
+
+const removeItem = ({ id, type }) => {
+  return {
+    type:
+      (type === "rooms" && types.REMOVE_ROOM_FROM_CART) ||
+      types.REMOVE_SERVICE_FROM_CART,
+    payload: {
+      id
+    }
   };
 };
 
@@ -146,13 +228,25 @@ const toggleBookingBox = () => {
   };
 };
 
-const toggleSnackBar = ({ message, onClose }) => {
+const toggleCheckoutForm = () => {
   return {
-    type: types.TOGGLE_SNACKBAR,
+    type: types.TOGGLE_CHECKOUT_FORM
+  };
+};
+
+const showSnackBar = (message, onClose) => {
+  return {
+    type: types.SHOW_SNACKBAR,
     payload: {
       message,
       onClose
     }
+  };
+};
+
+const hideSnackBar = () => {
+  return {
+    type: types.HIDE_SNACKBAR
   };
 };
 
@@ -172,7 +266,8 @@ const setRoomTypeFilter = filter => {
 
 const actions = {
   bookingFields: {
-    changeFieldsIfNeeded
+    changeFieldsIfNeeded,
+    changeCustomerInfoIfNeeded
   },
   server: {
     invalidateData,
@@ -180,15 +275,18 @@ const actions = {
     makeCheckForRoomsAvailability
   },
   cart: {
-    addServiceToCart,
-    addRoomToCart,
+    makeAddRoomToCart,
+    makeAddServiceToCart,
     changeNumRooms,
-    changeNumServices
+    changeNumServices,
+    removeItemFromCart
   },
   ui: {
     toggleShowCart,
-    toggleSnackBar,
-    toggleBookingBox
+    showSnackBar,
+    hideSnackBar,
+    toggleBookingBox,
+    toggleCheckoutForm
   },
   filter: {
     setHotelFilter,

@@ -9,7 +9,14 @@ const getAllRoomTypes = state =>
 export const selectRoomTypeById = (state, props) =>
   getAllRoomTypes(state).byId[props.id];
 
-const getAllServices = state => state.data[mapEndpoint(END_POINTS.SERVICES)];
+export const getAllServices = state =>
+  state.data[mapEndpoint(END_POINTS.SERVICES)];
+
+export const getServiceTypes = state =>
+  state.data[mapEndpoint(END_POINTS.SERVICE_TYPES)];
+
+export const getServiceTypeById = (state, props) =>
+  state.data[mapEndpoint(END_POINTS.SERVICE_TYPES)].byId[props.id];
 
 export const selectServiceById = (state, props) =>
   getAllServices(state).byId[props.id];
@@ -25,12 +32,40 @@ export const getHotelFilter = state => state.uiState.hotelFilter;
 
 export const getBookingFields = state => state.bookingFields;
 
+export const isCartOpen = state => state.uiState.cartOpen;
+
 export const getCart = state => state.cart;
 
+export const calculateMoney = () =>
+  createSelector(
+    [getCart, getAllRoomTypes, getAllServices],
+    (cart, roomTypes, services) =>
+      cart.rooms.reduce(
+        (total, item) => total + roomTypes.byId[item.id].price * item.count,
+        0
+      ) +
+      cart.services.reduce(
+        (total, item) => total + services.byId[item.id].price * item.count,
+        0
+      )
+  );
+
 export const getCartItem = (state, props) => ({
-  item: state.data[mapEndpoint(props.type)].byId[props.id],
+  item: state.data[props.type].byId[props.id],
   type: props.type
 });
+
+export const makeGetServiceType = () =>
+  createSelector(
+    [getAllServices, getServiceTypeById, getCart],
+    (services, type, cart) => ({
+      id: type.id,
+      services: type.services
+        .filter(id => !cart.services.some(service => service.id === id))
+        .map(serviceId => services.byId[serviceId])
+        .sort((s1, s2) => s1.price - s2.price)
+    })
+  );
 
 export const makeGetCartItem = () =>
   createSelector([getCart, getCartItem], (cart, cartItem) => {
@@ -85,17 +120,18 @@ export const areAllRoomsAvailable = () =>
   createSelector(
     [getAllRoomTypes, getAvailability, getRoomTypeFilter],
     (allRoomTypes, availabilities, roomTypeFilter) =>
-      roomTypeFilter.filter === ROOMTYPE_FILTER_AVAILABLE &&
-      (() => {
-        const query = mapQuery(END_POINTS.CHECK_AVAILABLE);
-        return allRoomTypes.allIds.every(roomTypeId =>
-          availabilities[query.allIds].every(hotelName => {
-            const has =
-              availabilities[query.byId][hotelName].rooms.byId[roomTypeId];
-            return typeof has !== "undefined" && has.length > 0;
-          })
-        );
-      })()
+      allRoomTypes.didInvalidate ||
+      (roomTypeFilter.filter === ROOMTYPE_FILTER_AVAILABLE &&
+        (() => {
+          const query = mapQuery(END_POINTS.CHECK_AVAILABLE);
+          return allRoomTypes.allIds.every(roomTypeId =>
+            availabilities[query.allIds].every(hotelName => {
+              const has =
+                availabilities[query.byId][hotelName].rooms.byId[roomTypeId];
+              return typeof has !== "undefined" && has.length > 0;
+            })
+          );
+        })())
   );
 
 export const makeGetRoomTypesWithFilters = () => {

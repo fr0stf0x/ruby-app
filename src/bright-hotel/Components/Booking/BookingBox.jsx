@@ -2,11 +2,8 @@ import Button from "@material-ui/core/Button/Button";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
 import Input from "@material-ui/core/Input";
-import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 import Zoom from "@material-ui/core/Zoom";
-import CloseIcon from "@material-ui/icons/Close";
 import moment from "moment";
 import React from "react";
 import DayPickerInput from "react-day-picker/DayPickerInput";
@@ -25,7 +22,7 @@ const styles = functionalBoxStyle;
 class BookingBox extends React.Component {
   initialFields = () => ({
     ...this.props.bookingFields,
-    snackbar: {
+    snackBar: {
       open: false
     }
   });
@@ -36,56 +33,50 @@ class BookingBox extends React.Component {
     const { changeFieldsIfNeeded, checkAvailability } = this.props;
     if (this.validateFields()) {
       changeFieldsIfNeeded(this.state.fields);
-      checkAvailability();
-      scrollTo("box");
+      checkAvailability().then(res => {
+        scrollTo("box");
+      });
     }
   };
 
-  onCloseSnackBar = () => {
+  resetFieldValue = field => {
     const defaultFields = this.initialFields();
-    const { fields, snackbar } = this.state;
-    this.setState(
-      {
-        fields: {
-          ...fields,
-          arrive: defaultFields.fields.arrive,
-          depart: defaultFields.fields.depart
-        },
-        snackbar: {
-          open: false
-        }
-      },
-      snackbar.onclose
-    );
-  };
-
-  showSnackBar = (message, onClose) => {
+    const { fields } = this.state;
     this.setState({
-      snackbar: {
-        open: true,
-        message,
-        onclose: onClose
+      fields: {
+        ...fields,
+        [field]: defaultFields.fields[field]
       }
     });
   };
 
   validateFields = () => {
     const { arrive, depart } = this.state.fields;
+    const { showSnackBar } = this.props;
     if (!(arrive instanceof Date)) {
-      return this.showSnackBar("Check-in field is not valid!", () =>
-        this.fromField.getInput().focus()
-      );
+      showSnackBar("Check-in field is not valid!", () => {
+        this.resetFieldValue("arrive");
+        this.fromField.getInput().focus();
+      });
+      return false;
     }
     if (!(depart instanceof Date)) {
-      return this.showSnackBar("Check-out field is not valid!", () =>
-        this.toField.getInput().focus()
-      );
+      showSnackBar("Check-out field is not valid!", () => {
+        this.resetFieldValue("depart");
+        this.toField.getInput().focus();
+      });
+      return false;
     }
     if (moment(depart).isBefore(moment(arrive))) {
-      return this.showSnackBar("Can not check-out before check-in!");
+      showSnackBar("Can not check-out before check-in!", () => {
+        this.resetFieldValue("arrive");
+        this.resetFieldValue("depart");
+      });
+      return false;
     }
     if (moment(depart).diff(moment(arrive), "month") >= 2) {
-      return this.showSnackBar("Can not stay more than 2 months!");
+      showSnackBar("Can not stay more than 2 months!");
+      return false;
     }
     return true;
   };
@@ -121,7 +112,6 @@ class BookingBox extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { snackbar } = this.state;
     const { arrive, depart, numOfAdults, numOfChildren } = this.state.fields;
     const modifiers = {
       start: arrive,
@@ -277,34 +267,7 @@ class BookingBox extends React.Component {
                 </Grid>
               </Grid>
             </Grid>
-            <Snackbar
-              open={snackbar.open}
-              autoHideDuration={6000}
-              onClose={this.onCloseSnackBar}
-              ContentProps={{
-                "aria-describedby": "message-id"
-              }}
-              message={<span id="message-id">{snackbar.message}</span>}
-              action={[
-                <Button
-                  key="undo"
-                  color="secondary"
-                  size="small"
-                  onClick={this.onCloseSnackBar}
-                >
-                  UNDO
-                </Button>,
-                <IconButton
-                  key="close"
-                  aria-label="Close"
-                  color="inherit"
-                  className={classes.close}
-                  onClick={this.onCloseSnackBar}
-                >
-                  <CloseIcon />
-                </IconButton>
-              ]}
-            />
+
             <Helmet>
               <style>
                 {`
@@ -348,10 +311,13 @@ export default connect(
     return {
       changeFieldsIfNeeded: fields =>
         dispatch(actions.bookingFields.changeFieldsIfNeeded(fields)),
-      checkAvailability: () => {
-        dispatch(actions.server.makeCheckForRoomsAvailability());
-        setTimeout(dispatch(actions.ui.toggleBookingBox()), 1000);
-      }
+      checkAvailability: () =>
+        dispatch(actions.server.makeCheckForRoomsAvailability()).then(res => {
+          dispatch(actions.ui.toggleBookingBox());
+          return res;
+        }),
+      showSnackBar: (message, onClose) =>
+        dispatch(actions.ui.showSnackBar(message, onClose))
     };
   }
 )(withStyles(styles)(withRouter(BookingBox)));

@@ -1,25 +1,21 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import actions from "./bright-hotel/Actions/actions";
-import END_POINTS from "./bright-hotel/Utils/api";
-import { Button, withStyles } from "@material-ui/core";
-import { ShoppingCart } from "@material-ui/icons";
 import Cart from "./bright-hotel/Components/Booking/Cart";
+import END_POINTS from "./bright-hotel/Utils/api";
+import SnackBar from "./bright-hotel/Components/SnackBar";
+import { withStyles } from "@material-ui/core";
+import CheckoutForm from "./bright-hotel/Components/CheckoutForm";
 
-const styles = theme => ({
+const styles = {
   cartPopup: {
     position: "fixed",
     bottom: "0.5rem",
     right: "1rem",
     zIndex: 999
-  },
-  fab: {
-    marginTop: "0.5rem",
-    float: "right"
   }
-});
-
+};
 class App extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.location !== prevProps.location) {
@@ -38,35 +34,19 @@ class App extends React.Component {
     );
   }
 
-  showCart = () => {
-    this.props.dispatch(actions.ui.toggleShowCart());
-  };
-
   render() {
-    const { children, classes, showButton } = this.props;
+    const { children, classes } = this.props;
     return (
       <div>
-        {children}
         <div className={classes.cartPopup}>
           <Cart />
-          {showButton && (
-            <Button
-              className={classes.fab}
-              variant="fab"
-              color="primary"
-              onClick={this.showCart}
-            >
-              <ShoppingCart />
-            </Button>
-          )}
+          <SnackBar />
+          <CheckoutForm />
         </div>
+        {children}
       </div>
     );
   }
 }
 
-export default withRouter(
-  connect(state => ({ showButton: state.cart.rooms.length > 0 }))(
-    withStyles(styles)(App)
-  )
-);
+export default withRouter(connect(() => ({}))(withStyles(styles)(App)));

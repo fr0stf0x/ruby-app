@@ -27,7 +27,6 @@ class BookableRoomCard extends React.Component {
         roomTypeId: roomType.id,
         hotelName: hotel.specific
       });
-      this.props.showCart();
     }
   };
 
@@ -60,8 +59,8 @@ export default connect(
     };
   },
   dispatch => ({
-    addRoomToCart: roomTypeId =>
-      dispatch(actions.cart.addRoomToCart(roomTypeId)),
+    addRoomToCart: ({ roomTypeId, hotelName }) =>
+      dispatch(actions.cart.makeAddRoomToCart({ roomTypeId, hotelName })),
     showCart: () => dispatch(actions.ui.toggleShowCart())
   })
 )(BookableRoomCard);
