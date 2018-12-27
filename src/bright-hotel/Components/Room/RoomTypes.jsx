@@ -36,7 +36,7 @@ class RoomTypes extends React.Component {
               </div>
             )) || (
             <div align="center">
-              <h2>No room available</h2>
+              <h2>No suitable rooms left</h2>
             </div>
           )}
         </div>

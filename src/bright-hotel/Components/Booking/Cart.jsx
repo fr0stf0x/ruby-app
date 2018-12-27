@@ -38,9 +38,6 @@ const styles = theme => ({
       maxHeight: "40vh",
       width: "80vw"
     },
-    // [theme.breakpoints.down("xs")]: {
-    //   padding: 0
-    // },
     [theme.breakpoints.up("sm")]: {
       maxHeight: "55vh",
       width: "45vw"
@@ -99,6 +96,7 @@ class Cart extends React.Component {
   };
 
   checkOut = () => {
+    this.props.dispatch(actions.ui.toggleShowCart());
     this.props.dispatch(actions.ui.toggleCheckoutForm());
   };
 
@@ -208,14 +206,14 @@ class Cart extends React.Component {
 }
 export default connect(() => {
   const getTotalMoney = calculateMoney();
-  return state => {
+  return (state, props) => {
     let cartOpen = isCartOpen(state);
     const cart = getCart(state);
     return {
       cartOpen,
       cart,
       currentHotel: getHotelFilter(state).specific,
-      totalMoney: getTotalMoney(state),
+      totalMoney: getTotalMoney(state, props),
       showButton: cart.rooms.length > 0 || cartOpen
     };
   };

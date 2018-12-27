@@ -3,12 +3,14 @@ import cart from "./Cart";
 import bookingFields from "./Booking";
 import data from "./Server";
 import uiState from "./Ui";
+import customerInfo from "./CustomerInfo";
 
 const BrightHotelApp = combineReducers({
   bookingFields,
   cart,
   data,
-  uiState
+  uiState,
+  customerInfo
 });
 
 export const createReducer = (initialState, handlers) => {

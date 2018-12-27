@@ -20,6 +20,7 @@ class SnackBar extends React.Component {
     return (
       <div>
         <Snackbar
+          style={{ zIndex: 999 }}
           TransitionComponent={Fade}
           open={snackBar.open}
           anchorOrigin={{

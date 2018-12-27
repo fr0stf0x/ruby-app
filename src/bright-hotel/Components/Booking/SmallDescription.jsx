@@ -30,10 +30,10 @@ const SmallDescription = props => {
 export default connect(() => {
   const getDescription = makeGetDescription();
   const allRoomsAvailable = areAllRoomsAvailable();
-  return state => {
+  return (state, props) => {
     const description = getDescription(state);
     return {
-      allRoomsAvailable: allRoomsAvailable(state),
+      allRoomsAvailable: allRoomsAvailable(state, props),
       description
     };
   };

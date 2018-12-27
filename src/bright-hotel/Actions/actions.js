@@ -12,15 +12,28 @@ const changeFields = fields => {
   };
 };
 
-const changeCustomerInfo = fields => {
+const changeCustomerInfo = fields => dispatch => {
+  Object.entries(fields).forEach(([key, value]) =>
+    dispatch(changeCustomerField(key, value))
+  );
+};
+
+const changeCustomerField = (name, value) => {
   return {
-    type: types.CHANGE_CUSTOMER_FIELDS,
-    payload: { fields }
+    type: types.CHANGE_CUSTOMER_FIELD,
+    payload: { name, value }
   };
 };
 
+const getCustomerInfo = phoneNumber => dispatch => {
+  return fetchDataFromServer(END_POINTS.MY_INFO, { phoneNumber })
+    .then(fields => dispatch(changeCustomerInfoIfNeeded(fields)))
+    .catch(err => dispatch(showSnackBar(err.message)));
+};
+
 const changeCustomerInfoIfNeeded = fields => (dispatch, getState) => {
-  if ((!Object.is(getState().bookingFields.customerInfo), fields)) {
+  if ((!Object.is(getCustomerInfo(getState())), fields)) {
+    localStorage.setItem("phoneNumber", fields.phoneNumber);
     dispatch(changeCustomerInfo(fields));
   }
 };
@@ -267,9 +280,11 @@ const setRoomTypeFilter = filter => {
 const actions = {
   bookingFields: {
     changeFieldsIfNeeded,
-    changeCustomerInfoIfNeeded
+    changeCustomerInfoIfNeeded,
+    changeCustomerField
   },
   server: {
+    getCustomerInfo,
     invalidateData,
     getDataIfNeeded,
     makeCheckForRoomsAvailability

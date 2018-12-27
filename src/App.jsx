@@ -13,7 +13,7 @@ const styles = {
     position: "fixed",
     bottom: "0.5rem",
     right: "1rem",
-    zIndex: 999
+    zIndex: 5
   }
 };
 class App extends React.Component {
@@ -24,14 +24,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(
-      actions.server.getDataIfNeeded(END_POINTS.ALL_ROOM_TYPES)
-    );
-    this.props.dispatch(actions.server.getDataIfNeeded(END_POINTS.HOTELS));
-    this.props.dispatch(actions.server.getDataIfNeeded(END_POINTS.SERVICES));
-    this.props.dispatch(
-      actions.server.getDataIfNeeded(END_POINTS.SERVICE_TYPES)
-    );
+    const phoneNumber = localStorage.getItem("phoneNumber");
+    const { dispatch } = this.props;
+    dispatch(actions.server.getDataIfNeeded(END_POINTS.ALL_ROOM_TYPES));
+    dispatch(actions.server.getDataIfNeeded(END_POINTS.HOTELS));
+    dispatch(actions.server.getDataIfNeeded(END_POINTS.SERVICES));
+    dispatch(actions.server.getDataIfNeeded(END_POINTS.SERVICE_TYPES));
+    phoneNumber && dispatch(actions.server.getCustomerInfo(phoneNumber));
   }
 
   render() {

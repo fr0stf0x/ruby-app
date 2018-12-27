@@ -1,13 +1,13 @@
+import { ClickAwayListener, MenuList, Popper } from "@material-ui/core";
+import { Button, Grow, MenuItem, Paper } from "@material-ui/core/es";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import Grid from "@material-ui/core/Grid/Grid";
 import { Check } from "@material-ui/icons";
 import React from "react";
 import { connect } from "react-redux";
-import { makeGetServiceType } from "../../Reducers/selectors";
-import { formatMoney, randomImage } from "../../Utils/utils";
-import { Button, MenuItem, Paper, Grow } from "@material-ui/core/es";
 import actions from "../../Actions/actions";
-import { Menu, Popper, ClickAwayListener, MenuList } from "@material-ui/core";
+import { makeGetServiceType } from "../../Reducers/selectors";
+import { formatMoney } from "../../Utils/utils";
 
 const styles = {
   media: {

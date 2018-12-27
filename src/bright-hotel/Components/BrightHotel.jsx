@@ -1,13 +1,16 @@
-import withStyles from "@material-ui/core/es/styles/withStyles";
-import classNames from "classnames";
 import React, { Suspense } from "react";
+import { connect } from "react-redux";
 import { Element } from "react-scroll";
-import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
+import classNames from "classnames";
+import withStyles from "@material-ui/core/es/styles/withStyles";
+
 import Button from "../../components/CustomButtons/Button";
 import Footer from "../../components/Footer/Footer";
 import NavBar from "../Layouts/NavBar";
 import NavHeader from "../Layouts/NavHeader";
 import FunctionalBox from "./Booking/FunctionalBox";
+import { makeGetRoomTypesWithFilters } from "../Reducers/selectors";
+import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
 
 const HeaderButton = () => (
   <Button
@@ -24,7 +27,7 @@ const HeaderButton = () => (
 
 class BrightHotel extends React.Component {
   render() {
-    const { classes } = this.props;
+    const { classes, areNoRoomsAvailable } = this.props;
     const RoomTypes = React.lazy(() => import("./Room/RoomTypes"));
     const FeaturedServices = React.lazy(() =>
       import("./Service/FeaturedServices")
@@ -49,6 +52,16 @@ class BrightHotel extends React.Component {
               </Element>
             </Suspense>
             <Suspense fallback={<h2>Loading</h2>}>
+              {areNoRoomsAvailable && (
+                <div>
+                  <div align="center">
+                    <h2>But you can pick multiple rooms below</h2>
+                  </div>
+                  <RoomTypes type="nonSuitableRooms" />
+                </div>
+              )}
+            </Suspense>
+            <Suspense fallback={<h2>Loading</h2>}>
               <Element name="services" id="services">
                 <FeaturedServices />
               </Element>
@@ -62,4 +75,20 @@ class BrightHotel extends React.Component {
   }
 }
 
-export default withStyles(landingPageStyle)(BrightHotel);
+const makeMapStateToProps = () => {
+  const getRoomTypes = makeGetRoomTypesWithFilters();
+  const mapStateToProps = (state, props) => {
+    const roomTypes = getRoomTypes(state, props);
+    const { allIds } = roomTypes || {
+      allIds: []
+    };
+    return {
+      areNoRoomsAvailable: allIds && allIds.length === 0
+    };
+  };
+  return mapStateToProps;
+};
+
+export default connect(makeMapStateToProps)(
+  withStyles(landingPageStyle)(BrightHotel)
+);

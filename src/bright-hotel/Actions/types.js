@@ -17,6 +17,7 @@ const CHANGE_CART_ITEM_COUNT = "CHANGE_CART_ITEM_COUNT";
 const REMOVE_CART_ITEM = "remove_cart_item";
 
 const CHANGE_FIELDS = "change_fields";
+const CHANGE_CUSTOMER_FIELD = "change_customer_field";
 const CHANGE_CUSTOMER_FIELDS = "change_customer_fields";
 const CHECK_AVAILABILITY = "check_rooms";
 
@@ -49,6 +50,7 @@ const types = {
   REMOVE_SERVICE_FROM_CART,
 
   CHANGE_FIELDS,
+  CHANGE_CUSTOMER_FIELD,
   CHANGE_CUSTOMER_FIELDS,
   CHECK_AVAILABILITY,
 

@@ -11,6 +11,7 @@ import headerLinksStyle from "../../assets/jss/material-kit-react/components/hea
 import Header from "../../components/Header/Header";
 import { scrollTop, scrollTo } from "../Utils/utils";
 import { Link } from "react-scroll";
+import SearchIcon from "@material-ui/icons/Search";
 
 const RightLinks = withStyles(headerLinksStyle)(({ ...props }) => {
   const { classes } = props;
@@ -53,6 +54,19 @@ const RightLinks = withStyles(headerLinksStyle)(({ ...props }) => {
             >
               <RoomServiceRounded />
               Services
+            </Link>
+          </span>
+        </ListItem>
+        <ListItem className={classes.listItem}>
+          <span style={{ cursor: "pointer" }}>
+            <Link
+              to=""
+              className={classes.navLink}
+              activeClass={classes.navLinkActive}
+              onClick={() => scrollTo("services")}
+            >
+              <SearchIcon />
+              My bookings
             </Link>
           </span>
         </ListItem>

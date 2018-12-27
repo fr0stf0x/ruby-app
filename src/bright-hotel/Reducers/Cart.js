@@ -36,14 +36,10 @@ const services = (state = [], action) => {
         }
       ];
     case types.REMOVE_SERVICE_FROM_CART:
-      console.log(state);
-      console.log(action.payload.id);
       // eslint-disable-next-line no-case-declarations
       let itemIdx = state.findIndex(
         service => service.id === action.payload.id
       );
-      console.log("item idx", itemIdx);
-      console.log([...state.slice(0, itemIdx), ...state.slice(itemIdx + 1)]);
       return [...state.slice(0, itemIdx), ...state.slice(itemIdx + 1)];
     case types.CHANGE_NUM_SERVICES:
       return mergeItemInArray(state, action.payload.id, item =>

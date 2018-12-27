@@ -178,12 +178,12 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   () => {
     const allRoomsAvailable = areAllRoomsAvailable();
-    return state => {
+    return (state, props) => {
       return {
-        roomTypeFilter: getRoomTypeFilter(state),
-        hotelFilter: getHotelFilter(state),
-        hotels: getHotels(state),
-        allRoomsAvailable: allRoomsAvailable(state)
+        roomTypeFilter: getRoomTypeFilter(state, props),
+        hotelFilter: getHotelFilter(state, props),
+        hotels: getHotels(state, props),
+        allRoomsAvailable: allRoomsAvailable(state, props)
       };
     };
   },

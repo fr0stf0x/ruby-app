@@ -14,7 +14,13 @@ import React from "react";
 import DatePicker from "react-date-picker";
 import { connect } from "react-redux";
 import actions from "../Actions/actions";
-import { getCart } from "../Reducers/selectors";
+import {
+  calculateMoney,
+  getCart,
+  makeGetCustomerInfo
+} from "../Reducers/selectors";
+import { formatMoney } from "../Utils/utils";
+import CheckoutItem from "./Booking/CheckoutItem";
 import "./react-date-picker.css";
 
 const styles = theme => ({
@@ -37,29 +43,34 @@ const styles = theme => ({
       paddingLeft: "5vw",
       paddingRight: "5vw"
     }
+  },
+  cartItem: {
+    [theme.breakpoints.up("xs")]: {
+      padding: "1rem",
+      boxShadow: "rgba(0,0,0,0.45) 0px 5px 15px 0px"
+    }
+  },
+  cartItems: {
+    maxHeight: "40vh",
+    overflow: "auto"
   }
 });
 
 class CheckoutForm extends React.Component {
-  getCustomerInfo = () => {
-    return (
-      this.props.customerInfo || {
-        dob: new Date(),
-        gender: "male"
-      }
+  getMyInfo = () => {
+    this.props.dispatch(
+      actions.server.getCustomerInfo(this.props.customerInfo.phoneNumber)
     );
   };
 
-  state = this.getCustomerInfo();
-
   handleDateChange = date => {
-    this.setState({ dob: date });
+    this.props.dispatch(actions.bookingFields.changeCustomerField("dob", date));
   };
 
   handleFieldChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-    });
+    this.props.dispatch(
+      actions.bookingFields.changeCustomerField(name, event.target.value)
+    );
   };
 
   closeDialog = () => {
@@ -70,12 +81,20 @@ class CheckoutForm extends React.Component {
   };
 
   checkOut = () => {
-    console.log(this.state);
+    console.log(this.props.customerInfo);
   };
 
   render() {
-    const { cart, dialogOpen, classes } = this.props;
-    const { dob, gender, name, address, phone, email, idCard } = this.state;
+    const { cart, dialogOpen, classes, totalMoney, customerInfo } = this.props;
+    const {
+      dob = new Date(),
+      gender = "M",
+      name = "",
+      address = "",
+      phoneNumber = "",
+      email = "",
+      idCard = ""
+    } = customerInfo;
     return (
       <Dialog
         className={classes.container}
@@ -95,7 +114,7 @@ class CheckoutForm extends React.Component {
           <Grid container alignItems="center" spacing={16}>
             {/* dob */}
             <Grid item xs={12} sm={6}>
-              <Grid container alignItems="center" spacing={16}>
+              <Grid container alignItems="center">
                 <Grid item xs={4}>
                   <span style={{ fontWeight: "400", color: "#817a6b" }}>
                     Day of birth *
@@ -112,13 +131,12 @@ class CheckoutForm extends React.Component {
                     onChange={this.handleDateChange}
                     value={dob}
                   />
-                  {/* </Fit> */}
                 </Grid>
               </Grid>
             </Grid>
             {/* gender */}
             <Grid item xs={12} sm={6}>
-              <Grid container alignItems="center" spacing={16}>
+              <Grid container alignItems="center">
                 <Grid item xs={4}>
                   <span style={{ fontWeight: "400", color: "#817a6b" }}>
                     Gender *
@@ -150,11 +168,37 @@ class CheckoutForm extends React.Component {
                 </Grid>
               </Grid>
             </Grid>
+            {/* phone */}
+            <Grid item xs={12} sm={6}>
+              <Grid container alignItems="center">
+                <Grid item xs={8}>
+                  <TextField
+                    required
+                    id="phoneNumber"
+                    value={phoneNumber}
+                    label="Phone number"
+                    className={classes.formControl}
+                    margin="normal"
+                    onChange={this.handleFieldChange("phoneNumber")}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <Button
+                    color={"primary"}
+                    onClick={this.getMyInfo}
+                    variant={"raised"}
+                    size={"small"}
+                  >
+                    Get my info
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
             {/* name */}
             <Grid item xs={12} sm={6}>
               <TextField
                 required
-                id="standard-required"
+                id="name"
                 label="Name"
                 value={name}
                 className={classes.formControl}
@@ -165,6 +209,7 @@ class CheckoutForm extends React.Component {
             {/* address */}
             <Grid item xs={12} sm={6}>
               <TextField
+                id="address"
                 required
                 value={address}
                 label="Address"
@@ -173,21 +218,11 @@ class CheckoutForm extends React.Component {
                 onChange={this.handleFieldChange("address")}
               />
             </Grid>
-            {/* phone */}
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                value={phone}
-                label="Phone number"
-                className={classes.formControl}
-                margin="normal"
-                onChange={this.handleFieldChange("phone")}
-              />
-            </Grid>
             {/* email */}
             <Grid item xs={12} sm={6}>
               <TextField
                 required
+                id="email"
                 value={email}
                 label="Email"
                 className={classes.formControl}
@@ -198,6 +233,7 @@ class CheckoutForm extends React.Component {
             {/* ID card */}
             <Grid item xs={12} sm={6}>
               <TextField
+                id="idCard"
                 required
                 value={idCard}
                 label="ID Card"
@@ -207,8 +243,45 @@ class CheckoutForm extends React.Component {
               />
             </Grid>
           </Grid>
+          <Grid container alignItems={"flex-start"} spacing={16}>
+            {/* rooms */}
+            <Grid item xs={12} sm={6}>
+              <h2 align="center">Rooms</h2>
+              <div className={classes.cartItems}>
+                {cart.rooms.map((room, key) => (
+                  <div
+                    style={{
+                      backgroundColor: (key % 2 && "#ccf2ff") || "#eaeae1"
+                    }}
+                    className={classes.cartItem}
+                    key={key}
+                  >
+                    <CheckoutItem type="rooms" id={room.id} />
+                  </div>
+                ))}
+              </div>
+            </Grid>
+            {/* services */}
+            <Grid item xs={12} sm={6}>
+              <h2 align="center">Services</h2>
+              <div className={classes.cartItems}>
+                {cart.services.map((service, key) => (
+                  <div
+                    style={{
+                      backgroundColor: (key % 2 && "#eaeae1") || "#ccf2ff"
+                    }}
+                    className={classes.cartItem}
+                    key={key}
+                  >
+                    <CheckoutItem type="services" id={service.id} />
+                  </div>
+                ))}
+              </div>
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
+          <h3>Total money: {formatMoney(totalMoney)}</h3>
           <Button
             size="large"
             variant={"contained"}
@@ -226,8 +299,13 @@ class CheckoutForm extends React.Component {
   }
 }
 
-export default connect(state => ({
-  cart: getCart(state),
-  dialogOpen: state.uiState.checkoutForm,
-  customerInfo: state.bookingFields.customerInfo
-}))(withStyles(styles)(CheckoutForm));
+export default connect(() => {
+  const getTotalMoney = calculateMoney();
+  const getCustomerInfo = makeGetCustomerInfo();
+  return (state, props) => ({
+    cart: getCart(state),
+    dialogOpen: state.uiState.checkoutForm,
+    totalMoney: getTotalMoney(state, props),
+    customerInfo: getCustomerInfo(state)
+  });
+})(withStyles(styles)(CheckoutForm));
