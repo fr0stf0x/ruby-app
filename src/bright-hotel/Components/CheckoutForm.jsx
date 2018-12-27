@@ -32,6 +32,12 @@ const styles = theme => ({
     padding: 0,
     margin: 0
   },
+  title: {
+    fontWeight: "400",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "18px"
+    }
+  },
   radio: {
     padding: "0 5px 0 0"
   },
@@ -248,7 +254,7 @@ class CheckoutForm extends React.Component {
             <Grid item xs={12} sm={6}>
               <h2 align="center">Rooms</h2>
               <div className={classes.cartItems}>
-                {cart.rooms.map((room, key) => (
+                {cart.items.rooms.map((room, key) => (
                   <div
                     style={{
                       backgroundColor: (key % 2 && "#ccf2ff") || "#eaeae1"
@@ -265,7 +271,7 @@ class CheckoutForm extends React.Component {
             <Grid item xs={12} sm={6}>
               <h2 align="center">Services</h2>
               <div className={classes.cartItems}>
-                {cart.services.map((service, key) => (
+                {cart.items.services.map((service, key) => (
                   <div
                     style={{
                       backgroundColor: (key % 2 && "#eaeae1") || "#ccf2ff"
@@ -281,7 +287,9 @@ class CheckoutForm extends React.Component {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <h3>Total money: {formatMoney(totalMoney)}</h3>
+          <h3 className={classes.title}>
+            Total money: {formatMoney(totalMoney)}
+          </h3>
           <Button
             size="large"
             variant={"contained"}

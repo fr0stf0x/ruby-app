@@ -145,7 +145,7 @@ const makeAddRoomToCart = ({ roomTypeId, hotelName }) => (
   getState
 ) => {
   const cart = getState().cart;
-  if (cart.rooms.length === 0) {
+  if (cart.items.rooms.length === 0) {
     dispatch(setCartAt(hotelName));
   }
   if (cart.info.at && cart.info.at !== hotelName) {
@@ -155,50 +155,34 @@ const makeAddRoomToCart = ({ roomTypeId, hotelName }) => (
       )
     );
   }
-  dispatch(addRoomToCart({ roomTypeId }));
+  dispatch(addItemToCart(roomTypeId, "rooms"));
   dispatch(toggleShowCart());
-};
-
-const addRoomToCart = ({ roomTypeId }) => {
-  return {
-    type: types.ADD_ROOM_TO_CART,
-    payload: {
-      roomTypeId
-    }
-  };
-};
-
-const changeNumRooms = ({ id, count }) => {
-  return {
-    type: types.CHANGE_NUM_ROOMS,
-    payload: { id, count }
-  };
-};
-
-const changeNumServices = ({ id, count }) => {
-  return {
-    type: types.CHANGE_NUM_SERVICES,
-    payload: { id, count }
-  };
 };
 
 const makeAddServiceToCart = serviceId => (dispatch, getState) => {
   const cart = getState().cart;
-  if (cart.rooms.length === 0) {
+  if (cart.items.rooms.length === 0) {
     return dispatch(
       showSnackBar("You haven't booked a room yet!", () => {
         scrollTo("box");
       })
     );
   }
-  dispatch(addServiceToCart(serviceId));
+  dispatch(addItemToCart(serviceId, "services"));
   dispatch(toggleShowCart());
 };
 
-const addServiceToCart = serviceId => {
+const addItemToCart = (id, type) => {
   return {
-    type: types.ADD_SERVICE_TO_CART,
-    payload: { serviceId }
+    type: types.ADD_CART_ITEM,
+    payload: { id, type }
+  };
+};
+
+const changeCartItemCount = ({ id, type, count }) => {
+  return {
+    type: types.CHANGE_CART_ITEM_COUNT,
+    payload: { id, type, count }
   };
 };
 
@@ -209,8 +193,8 @@ const removeItemFromCart = (id, type) => dispatch => {
 
 const afterRemove = () => (dispatch, getState) => {
   const cart = getState().cart;
-  if (cart.rooms.length === 0) {
-    cart.services.forEach(service =>
+  if (cart.items.rooms.length === 0) {
+    cart.items.services.forEach(service =>
       dispatch(removeItem({ id: service.id, type: "services" }))
     );
     dispatch(toggleShowCart());
@@ -220,11 +204,10 @@ const afterRemove = () => (dispatch, getState) => {
 
 const removeItem = ({ id, type }) => {
   return {
-    type:
-      (type === "rooms" && types.REMOVE_ROOM_FROM_CART) ||
-      types.REMOVE_SERVICE_FROM_CART,
+    type: types.REMOVE_CART_ITEM,
     payload: {
-      id
+      id,
+      type
     }
   };
 };
@@ -292,8 +275,7 @@ const actions = {
   cart: {
     makeAddRoomToCart,
     makeAddServiceToCart,
-    changeNumRooms,
-    changeNumServices,
+    changeCartItemCount,
     removeItemFromCart
   },
   ui: {

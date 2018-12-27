@@ -17,13 +17,9 @@ const styles = {
 class CheckoutItem extends React.Component {
   onNumChange = (id, type) => event => {
     const { dispatch } = this.props;
-    (type === "rooms" &&
-      dispatch(
-        actions.cart.changeNumRooms({ id, count: event.target.value })
-      )) ||
-      dispatch(
-        actions.cart.changeNumServices({ id, count: event.target.value })
-      );
+    dispatch(
+      actions.cart.changeCartItemCount({ id, type, count: event.target.value })
+    );
   };
 
   clearItem = () => {

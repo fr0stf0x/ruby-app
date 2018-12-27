@@ -121,7 +121,7 @@ class Cart extends React.Component {
               <div className={classes.cartItemsWrapper}>
                 <Divider />
                 <div className={classes.cartItems}>
-                  {cart.rooms.map((room, key) => (
+                  {cart.items.rooms.map((room, key) => (
                     <div
                       style={{
                         backgroundColor: (key % 2 && "#ccf2ff") || "#eaeae1"
@@ -135,7 +135,7 @@ class Cart extends React.Component {
                 </div>
                 <Divider />
                 {!this.state.asked &&
-                  cart.services.length === 0 && (
+                  cart.items.services.length === 0 && (
                     <Paper className={classes.extraPaper}>
                       <div className={classes.extraQuestion}>
                         Would you like some extra services?
@@ -153,7 +153,7 @@ class Cart extends React.Component {
                     </Paper>
                   )}
                 <div className={classes.cartItems}>
-                  {cart.services.map((service, key) => (
+                  {cart.items.services.map((service, key) => (
                     <div
                       style={{
                         backgroundColor: (key % 2 && "#eaeae1") || "#ccf2ff"
@@ -194,7 +194,9 @@ class Cart extends React.Component {
             <Badge
               className={classes.badge}
               color={"secondary"}
-              badgeContent={cart.rooms.length + cart.services.length}
+              badgeContent={
+                cart.items.rooms.length + cart.items.services.length
+              }
             >
               <ShoppingCart />
             </Badge>
@@ -214,7 +216,7 @@ export default connect(() => {
       cart,
       currentHotel: getHotelFilter(state).specific,
       totalMoney: getTotalMoney(state, props),
-      showButton: cart.rooms.length > 0 || cartOpen
+      showButton: cart.items.rooms.length > 0 || cartOpen
     };
   };
 })(withStyles(styles)(Cart));

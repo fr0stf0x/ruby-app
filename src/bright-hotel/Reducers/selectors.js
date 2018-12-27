@@ -39,17 +39,19 @@ export const isCartOpen = state => state.uiState.cartOpen;
 
 export const getCart = state => state.cart;
 
+export const isDialogOpen = state => state.uiState.dialogOpen;
+
 const getCustomerInfo = state => state.customerInfo;
 
 export const calculateMoney = () =>
   createSelector(
     [getCart, getRoomTypes, getAllServices],
     (cart, roomTypes, services) =>
-      cart.rooms.reduce(
+      cart.items.rooms.reduce(
         (total, item) => total + roomTypes.byId[item.id].price * item.count,
         0
       ) +
-      cart.services.reduce(
+      cart.items.services.reduce(
         (total, item) => total + services.byId[item.id].price * item.count,
         0
       )
@@ -63,27 +65,27 @@ export const getCartItem = (state, props) => ({
   type: props.type
 });
 
+export const makeGetCartItem = () =>
+  createSelector([getCart, getCartItem], (cart, cartItem) => {
+    return {
+      item: cartItem.item,
+      count: cart.items[mapEndpoint(cartItem.type)].find(
+        item => item.id === cartItem.item.id
+      ).count
+    };
+  });
+
 export const makeGetServiceType = () =>
   createSelector(
     [getAllServices, getServiceTypeById, getCart],
     (services, type, cart) => ({
       id: type.id,
       services: type.services
-        .filter(id => !cart.services.some(service => service.id === id))
+        .filter(id => !cart.items.services.some(service => service.id === id))
         .map(serviceId => services.byId[serviceId])
         .sort((s1, s2) => s1.price - s2.price)
     })
   );
-
-export const makeGetCartItem = () =>
-  createSelector([getCart, getCartItem], (cart, cartItem) => {
-    return {
-      item: cartItem.item,
-      count: cart[mapEndpoint(cartItem.type)].find(
-        item => item.id === cartItem.item.id
-      ).count
-    };
-  });
 
 export const makeGetBookingFields = () =>
   createSelector([getBookingFields], bookingFields => {
@@ -153,11 +155,9 @@ export const makeGetRoomTypesWithFilters = () => {
         allIds: availabilities[mapQuery(END_POINTS.CHECK_AVAILABLE).byId][
           hotelFilter.specific
         ][availabilities.type || AVAILABLE_TYPE.SUITABLE].allIds.filter(
-          id => !cart.rooms.some(room => room.id === id)
+          id => !cart.items.rooms.some(room => room.id === id)
         )
       }) ||
       allRoomTypes
   );
 };
-
-export const isDialogOpen = state => state.uiState.dialogOpen;
