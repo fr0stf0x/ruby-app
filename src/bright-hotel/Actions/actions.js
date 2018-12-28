@@ -1,7 +1,16 @@
-import { makeGetBookingFields } from "../Reducers/selectors";
+import {
+  getBookingFields,
+  getCart,
+  getHotelFilter,
+  makeGetBookingFields,
+  selectRandomRoomNum,
+  selectRoomTypeByIdWithoutProps,
+  isCartEmpty,
+  makeGetCustomerInfo
+} from "../Reducers/selectors";
 import { ROOMTYPE_FILTER_AVAILABLE, SHOW_ALL } from "../Reducers/Ui";
 import END_POINTS, { mapEndpoint, mapEndpointId, mapQuery } from "../Utils/api";
-import { fetchDataFromServer, scrollTo } from "../Utils/utils";
+import { fetchDataFromServer, scrollTo, postData } from "../Utils/utils";
 import types from "./types";
 
 // fields
@@ -25,14 +34,14 @@ const changeCustomerField = (name, value) => {
   };
 };
 
-const getCustomerInfo = phoneNumber => dispatch => {
+const getCustomerInfoFromServer = phoneNumber => dispatch => {
   return fetchDataFromServer(END_POINTS.MY_INFO, { phoneNumber })
     .then(fields => dispatch(changeCustomerInfoIfNeeded(fields)))
     .catch(err => dispatch(showSnackBar(err.message)));
 };
 
 const changeCustomerInfoIfNeeded = fields => (dispatch, getState) => {
-  if ((!Object.is(getCustomerInfo(getState())), fields)) {
+  if ((!Object.is(makeGetCustomerInfo()(getState())), fields)) {
     localStorage.setItem("phoneNumber", fields.phoneNumber);
     dispatch(changeCustomerInfo(fields));
   }
@@ -129,7 +138,31 @@ const makeCheckForRoomsAvailability = () => dispatch =>
     return res;
   });
 
+const checkOut = bookingRequest => dispatch => {
+  console.log(bookingRequest);
+  dispatch(toggleCheckoutForm());
+  dispatch(toggleProgress());
+  postData(bookingRequest, END_POINTS.BOOKING)
+    .then(res => {
+      console.log(res);
+      dispatch(clearCart());
+      dispatch(showSnackBar(res.message));
+      return res;
+    })
+    .catch(err => {
+      dispatch(toggleCheckoutForm());
+      console.log(err.message);
+    })
+    .finally(() => dispatch(toggleProgress()));
+};
+
 // cart
+
+const clearCart = () => {
+  return {
+    type: types.CLEAR_CART
+  };
+};
 
 const setCartAt = at => {
   return {
@@ -140,12 +173,72 @@ const setCartAt = at => {
   };
 };
 
-const makeAddRoomToCart = ({ roomTypeId, hotelName }) => (
+const addRoomDetail = (roomTypeId, details) => {
+  return {
+    type: types.ADD_ROOM_DETAIL,
+    payload: { roomTypeId, details }
+  };
+};
+
+const changeRoomDetail = (roomTypeId, roomNum, change) => {
+  return {
+    type: types.CHANGE_ROOM_DETAIL,
+    payload: { roomTypeId, id: roomNum, change }
+  };
+};
+
+const removeRoomDetail = id => {
+  return {
+    type: types.REMOVE_ROOM_DETAIL,
+    payload: { id }
+  };
+};
+
+const mapRoomDetails = () => (dispatch, getState) => {
+  const state = getState();
+  const cart = getCart(state);
+  const hotelName = getHotelFilter(state).specific;
+  const { numOfAdults, numOfChildren } = getBookingFields(state).fields;
+  const ratio = Math.floor(+numOfAdults / +numOfChildren);
+  let adultsRemaining = numOfAdults,
+    childrenRemaining = numOfChildren;
+  cart.items.rooms.forEach(roomType => {
+    const { id: roomTypeId, count, availableType } = roomType;
+    const roomTypeDetail = selectRoomTypeByIdWithoutProps(state, roomTypeId);
+    const { maxCapacity } = roomTypeDetail;
+    const details = {};
+    for (var i = 0; i < count; i++) {
+      const adults =
+        adultsRemaining > Math.ceil(maxCapacity / ((1 + ratio) / ratio))
+          ? Math.ceil(maxCapacity / ((1 + ratio) / ratio))
+          : adultsRemaining;
+      adultsRemaining = adultsRemaining - adults;
+      const children =
+        childrenRemaining > maxCapacity - adults
+          ? maxCapacity - adults
+          : childrenRemaining;
+      childrenRemaining = childrenRemaining - children;
+      const randomRoomNum = selectRandomRoomNum(state, {
+        availableType,
+        hotelName,
+        roomTypeId
+      });
+      details[randomRoomNum] = {
+        numOfAdults: adults > 0 ? adults : 1,
+        numOfChildren: children
+      };
+    }
+    dispatch(addRoomDetail(roomTypeId, details));
+  });
+};
+
+const makeAddRoomToCart = ({ roomTypeId, hotelName, availableType }) => (
   dispatch,
   getState
 ) => {
-  const cart = getState().cart;
-  if (cart.items.rooms.length === 0) {
+  const state = getState();
+  const cart = state.cart;
+  if (isCartEmpty(state)) {
     dispatch(setCartAt(hotelName));
   }
   if (cart.info.at && cart.info.at !== hotelName) {
@@ -155,7 +248,15 @@ const makeAddRoomToCart = ({ roomTypeId, hotelName }) => (
       )
     );
   }
-  dispatch(addItemToCart(roomTypeId, "rooms"));
+  const { numOfAdults, numOfChildren } = getBookingFields(state).fields;
+  let totalPeople = +numOfAdults + +numOfChildren;
+  const roomTypeDetail = selectRoomTypeByIdWithoutProps(state, roomTypeId);
+  const { maxCapacity } = roomTypeDetail;
+  const roomCount = isCartEmpty(state)
+    ? Math.ceil(totalPeople / maxCapacity)
+    : 1;
+  dispatch(addItemToCart("rooms", roomTypeId, roomCount, availableType));
+
   dispatch(toggleShowCart());
 };
 
@@ -168,14 +269,14 @@ const makeAddServiceToCart = serviceId => (dispatch, getState) => {
       })
     );
   }
-  dispatch(addItemToCart(serviceId, "services"));
+  dispatch(addItemToCart("services", serviceId, cart.items.rooms.length));
   dispatch(toggleShowCart());
 };
 
-const addItemToCart = (id, type) => {
+const addItemToCart = (type, itemId, count, availableType) => {
   return {
     type: types.ADD_CART_ITEM,
-    payload: { id, type }
+    payload: { id: itemId, count, type, availableType }
   };
 };
 
@@ -240,6 +341,12 @@ const showSnackBar = (message, onClose) => {
   };
 };
 
+const toggleProgress = () => {
+  return {
+    type: types.TOGGLE_PROGRESS
+  };
+};
+
 const hideSnackBar = () => {
   return {
     type: types.HIDE_SNACKBAR
@@ -267,18 +374,25 @@ const actions = {
     changeCustomerField
   },
   server: {
-    getCustomerInfo,
+    checkOut,
+    getCustomerInfoFromServer,
     invalidateData,
     getDataIfNeeded,
     makeCheckForRoomsAvailability
   },
   cart: {
+    clearCart,
+    mapRoomDetails,
+    addRoomDetail,
+    changeRoomDetail,
+    removeRoomDetail,
     makeAddRoomToCart,
     makeAddServiceToCart,
     changeCartItemCount,
     removeItemFromCart
   },
   ui: {
+    toggleProgress,
     toggleShowCart,
     showSnackBar,
     hideSnackBar,

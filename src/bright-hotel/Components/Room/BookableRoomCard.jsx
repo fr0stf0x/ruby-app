@@ -19,13 +19,20 @@ class BookableRoomCard extends React.Component {
   image = randomImage();
 
   bookHandler = () => {
-    const { canBook, addRoomToCart, roomType, hotel } = this.props;
+    const {
+      canBook,
+      addRoomToCart,
+      roomType,
+      hotel,
+      availableType
+    } = this.props;
     if (!canBook) {
       scrollTo("box");
     } else {
       addRoomToCart({
         roomTypeId: roomType.id,
-        hotelName: hotel.specific
+        hotelName: hotel.specific,
+        availableType
       });
     }
   };
@@ -59,8 +66,10 @@ export default connect(
     };
   },
   dispatch => ({
-    addRoomToCart: ({ roomTypeId, hotelName }) =>
-      dispatch(actions.cart.makeAddRoomToCart({ roomTypeId, hotelName })),
+    addRoomToCart: ({ roomTypeId, hotelName, availableType }) =>
+      dispatch(
+        actions.cart.makeAddRoomToCart({ roomTypeId, hotelName, availableType })
+      ),
     showCart: () => dispatch(actions.ui.toggleShowCart())
   })
 )(BookableRoomCard);

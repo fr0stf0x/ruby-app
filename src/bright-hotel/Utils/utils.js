@@ -56,7 +56,7 @@ export const fetchDataFromServer = (
 };
 
 export const postData = (data, endpoint) =>
-  axios.post(`${API_URL}/${endpoint}`).then(res => res.data);
+  axios.post(`${API_URL}/${endpoint}`, data).then(res => res.data);
 
 export const AVAILABLE_TYPE = {
   SUITABLE: "suitableRooms",

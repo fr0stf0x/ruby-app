@@ -96,8 +96,10 @@ class Cart extends React.Component {
   };
 
   checkOut = () => {
-    this.props.dispatch(actions.ui.toggleShowCart());
-    this.props.dispatch(actions.ui.toggleCheckoutForm());
+    const { dispatch } = this.props;
+    dispatch(actions.ui.toggleShowCart());
+    dispatch(actions.cart.mapRoomDetails());
+    dispatch(actions.ui.toggleCheckoutForm());
   };
 
   render() {

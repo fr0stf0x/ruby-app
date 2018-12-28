@@ -14,7 +14,8 @@ const uiState = (
     snackBar: {
       open: false
     },
-    checkoutForm: false
+    checkoutForm: false,
+    isLoading: false
   },
   action
 ) => {
@@ -55,6 +56,10 @@ const uiState = (
     case types.TOGGLE_CHECKOUT_FORM:
       return mergeObj(state, {
         checkoutForm: !state.checkoutForm
+      });
+    case types.TOGGLE_PROGRESS:
+      return mergeObj(state, {
+        isLoading: !state.isLoading
       });
     default:
       return state;

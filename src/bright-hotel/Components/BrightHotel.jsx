@@ -1,16 +1,14 @@
-import React, { Suspense } from "react";
-import { connect } from "react-redux";
-import { Element } from "react-scroll";
-import classNames from "classnames";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-
+import classNames from "classnames";
+import React, { Suspense } from "react";
+import { Element } from "react-scroll";
+import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
 import Button from "../../components/CustomButtons/Button";
 import Footer from "../../components/Footer/Footer";
 import NavBar from "../Layouts/NavBar";
 import NavHeader from "../Layouts/NavHeader";
 import FunctionalBox from "./Booking/FunctionalBox";
-import { makeGetRoomTypesWithFilters } from "../Reducers/selectors";
-import landingPageStyle from "../../assets/jss/material-kit-react/views/landingPage";
+import RoomSection from "./Room/RoomSection";
 
 const HeaderButton = () => (
   <Button
@@ -27,11 +25,11 @@ const HeaderButton = () => (
 
 class BrightHotel extends React.Component {
   render() {
-    const { classes, areNoRoomsAvailable } = this.props;
-    const RoomTypes = React.lazy(() => import("./Room/RoomTypes"));
+    const { classes } = this.props;
     const FeaturedServices = React.lazy(() =>
       import("./Service/FeaturedServices")
     );
+
     return (
       <div>
         <NavBar />
@@ -43,24 +41,10 @@ class BrightHotel extends React.Component {
         />
         <div className={classNames(classes.main, classes.mainRaised)}>
           <div className={classes.container}>
-            <div style={{ position: "relative", zIndex: 999 }}>
+            <div style={{ position: "relative", zIndex: 998 }}>
               <FunctionalBox />
             </div>
-            <Suspense fallback={<h2>Loading</h2>}>
-              <Element name="rooms" id="rooms">
-                <RoomTypes />
-              </Element>
-            </Suspense>
-            <Suspense fallback={<h2>Loading</h2>}>
-              {areNoRoomsAvailable && (
-                <div>
-                  <div align="center">
-                    <h2>But you can pick multiple rooms below</h2>
-                  </div>
-                  <RoomTypes type="nonSuitableRooms" />
-                </div>
-              )}
-            </Suspense>
+            <RoomSection />
             <Suspense fallback={<h2>Loading</h2>}>
               <Element name="services" id="services">
                 <FeaturedServices />
@@ -74,21 +58,4 @@ class BrightHotel extends React.Component {
     );
   }
 }
-
-const makeMapStateToProps = () => {
-  const getRoomTypes = makeGetRoomTypesWithFilters();
-  const mapStateToProps = (state, props) => {
-    const roomTypes = getRoomTypes(state, props);
-    const { allIds } = roomTypes || {
-      allIds: []
-    };
-    return {
-      areNoRoomsAvailable: allIds && allIds.length === 0
-    };
-  };
-  return mapStateToProps;
-};
-
-export default connect(makeMapStateToProps)(
-  withStyles(landingPageStyle)(BrightHotel)
-);
+export default withStyles(landingPageStyle)(BrightHotel);

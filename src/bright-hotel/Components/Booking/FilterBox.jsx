@@ -29,7 +29,7 @@ class FilterBox extends React.Component {
   };
 
   reCheckAvailability = () => {
-    this.props.toggleBookingBox();
+    this.props.recheckAndToggleBookingBox();
     scrollTo("box");
   };
 
@@ -170,7 +170,11 @@ class FilterBox extends React.Component {
 const mapDispatchToProps = dispatch => {
   return {
     showAllRooms: filter => dispatch(actions.filter.setRoomTypeFilter(filter)),
-    toggleBookingBox: () => dispatch(actions.ui.toggleBookingBox()),
+    recheckAndToggleBookingBox: () => {
+      dispatch(actions.ui.toggleBookingBox());
+      dispatch(actions.filter.setRoomTypeFilter(END_POINTS.ALL_ROOM_TYPES));
+      dispatch(actions.cart.clearCart());
+    },
     setHotelFilter: filter => dispatch(actions.filter.setHotelFilter(filter))
   };
 };

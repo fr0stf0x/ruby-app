@@ -29,12 +29,13 @@ class BookingBox extends React.Component {
 
   state = this.initialFields();
 
-  checkAvailability = () => {
+  handleCheckAvailability = () => {
     const { changeFieldsIfNeeded, checkAvailability } = this.props;
     if (this.validateFields()) {
       changeFieldsIfNeeded(this.state.fields);
       checkAvailability().then(res => {
         scrollTo("box");
+        return res;
       });
     }
   };
@@ -258,7 +259,7 @@ class BookingBox extends React.Component {
                       <Button
                         variant={"extendedFab"}
                         color={"secondary"}
-                        onClick={this.checkAvailability}
+                        onClick={this.handleCheckAvailability}
                       >
                         Check availability
                       </Button>

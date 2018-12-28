@@ -9,10 +9,16 @@ import {
 import { ROOMTYPE_FILTER_AVAILABLE } from "../../Reducers/Ui";
 import SmallDescription from "../Booking/SmallDescription";
 import BookableRoomCard from "./BookableRoomCard";
+import { AVAILABLE_TYPE } from "../../Utils/utils";
 
 class RoomTypes extends React.Component {
   render() {
-    const { allIds: roomTypeIds, isFetching, canBook } = this.props;
+    const {
+      allIds: roomTypeIds,
+      isFetching,
+      canBook,
+      availableType
+    } = this.props;
     return (
       <Zoom in style={{ transitionDelay: "100ms" }}>
         <div>
@@ -21,11 +27,11 @@ class RoomTypes extends React.Component {
             Array.isArray(roomTypeIds) &&
             roomTypeIds.length > 0 && (
               <div>
-                <SmallDescription />
                 <Grid container spacing={16}>
                   {roomTypeIds.sort().map((roomTypeId, key) => (
                     <Grid item xs={12} key={key}>
                       <BookableRoomCard
+                        availableType={availableType || AVAILABLE_TYPE.SUITABLE}
                         canBook={canBook(roomTypeId)}
                         id={roomTypeId}
                         direction={key % 2 ? "row-reverse" : "row"}

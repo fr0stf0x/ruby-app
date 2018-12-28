@@ -1,4 +1,4 @@
-import { FormControl, Input } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { Grid, IconButton, withStyles } from "@material-ui/core/es";
 import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
@@ -11,57 +11,60 @@ const styles = {
   formControl: {
     padding: 0,
     margin: 0
+  },
+  margin: {
+    margin: "0 4vw"
   }
 };
 
 class CheckoutItem extends React.Component {
-  onNumChange = (id, type) => event => {
+  onNumChange = (roomTypeId, roomNum, name) => event => {
     const { dispatch } = this.props;
     dispatch(
-      actions.cart.changeCartItemCount({ id, type, count: event.target.value })
+      actions.cart.changeRoomDetail(roomTypeId, roomNum, {
+        [name]: event.target.value
+      })
     );
   };
 
   clearItem = () => {
-    const { dispatch, cartItem, type } = this.props;
-    dispatch(actions.cart.removeItemFromCart(cartItem.item.id, type));
+    const { dispatch, cartItem, type: cartItemType } = this.props;
+    dispatch(actions.cart.removeItemFromCart(cartItem.item.id, cartItemType));
   };
 
   render() {
-    const { cartItem, classes, type } = this.props;
-    const item = cartItem.item;
-    const count = cartItem.count;
+    const { classes, cartItem, type: cartItemType } = this.props;
+    const { details, count, item } = cartItem;
+    const { id: roomTypeId, name } = item;
+    const { rooms } = details;
+
     return (
       <div>
         <Grid
           container
-          justify={"center"}
           alignContent={"center"}
           alignItems={"center"}
           spacing={8}
         >
-          <Grid item xs={4}>
-            <span>{item.name}</span>
-          </Grid>
-          <Grid item xs={2}>
-            <FormControl className={classes.formControl}>
-              <Input
-                type={"number"}
-                value={count}
-                onChange={this.onNumChange(item.id, type)}
-                inputProps={{ min: "1", max: "10", step: "1" }}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
+          {/* count */}
+          <Grid item xs={12}>
             <Grid
               container
               justify={"space-between"}
               alignContent={"center"}
               alignItems={"center"}
             >
-              <Grid item>{formatMoney(item.price * count)}</Grid>
-              <Grid item>
+              <Grid item xs={2}>
+                <span>{count}</span>
+              </Grid>
+              {/* name/ */}
+              <Grid item xs={4}>
+                <span>{name}</span>
+              </Grid>
+              <Grid item xs={3}>
+                {formatMoney(item.price * count)}
+              </Grid>
+              <Grid item xs={2}>
                 <IconButton
                   key="close"
                   aria-label="Close"
@@ -71,6 +74,52 @@ class CheckoutItem extends React.Component {
                   <CloseIcon />
                 </IconButton>
               </Grid>
+            </Grid>
+          </Grid>
+          {/* details */}
+          <Grid item xs={12}>
+            <Grid
+              container
+              direction={"column"}
+              justify={"center"}
+              alignContent={"center"}
+              alignItems={"center"}
+            >
+              {cartItemType === "rooms" &&
+                rooms &&
+                Object.entries(rooms).map(
+                  ([roomNum, { numOfAdults, numOfChildren }]) => (
+                    <Grid item key={roomNum}>
+                      <span className={classes.margin}>{roomNum}</span>
+                      <span className={classes.margin}>
+                        <TextField
+                          label={"Adults"}
+                          type={"number"}
+                          value={numOfAdults}
+                          onChange={this.onNumChange(
+                            roomTypeId,
+                            roomNum,
+                            "numOfAdults"
+                          )}
+                          inputProps={{ min: "0", max: "10", step: "1" }}
+                        />
+                      </span>
+                      <span className={classes.margin}>
+                        <TextField
+                          label={"Children"}
+                          type={"number"}
+                          value={numOfChildren}
+                          onChange={this.onNumChange(
+                            roomTypeId,
+                            roomNum,
+                            "numOfChildren"
+                          )}
+                          inputProps={{ min: "0", max: "10", step: "1" }}
+                        />
+                      </span>
+                    </Grid>
+                  )
+                )}
             </Grid>
           </Grid>
         </Grid>

@@ -17,7 +17,8 @@ import actions from "../Actions/actions";
 import {
   calculateMoney,
   getCart,
-  makeGetCustomerInfo
+  makeGetCustomerInfo,
+  getBookingFields
 } from "../Reducers/selectors";
 import { formatMoney } from "../Utils/utils";
 import CheckoutItem from "./Booking/CheckoutItem";
@@ -65,7 +66,9 @@ const styles = theme => ({
 class CheckoutForm extends React.Component {
   getMyInfo = () => {
     this.props.dispatch(
-      actions.server.getCustomerInfo(this.props.customerInfo.phoneNumber)
+      actions.server.getCustomerInfoFromServer(
+        this.props.customerInfo.phoneNumber
+      )
     );
   };
 
@@ -87,7 +90,31 @@ class CheckoutForm extends React.Component {
   };
 
   checkOut = () => {
-    console.log(this.props.customerInfo);
+    const { customerInfo, cart, dispatch } = this.props;
+    const { services } = cart.items;
+    const { at: hotelName, roomDetails } = cart.info;
+    const { arrive, depart } = this.props.bookingFields;
+    let bookingDetails = [];
+    Object.entries(roomDetails).forEach(([roomTypeId, obj]) => {
+      Object.entries(obj.rooms).forEach(([roomNum, value]) => {
+        const { numOfChildren, numOfAdults } = value;
+        bookingDetails.push({
+          roomNum,
+          numOfAdults,
+          numOfChildren
+        });
+      });
+    });
+
+    const bookingRequest = {
+      arrive,
+      depart,
+      hotelName,
+      guestInfo: customerInfo,
+      bookingDetails,
+      services: services.map(ser => ({ serviceId: ser.id, amount: ser.count }))
+    };
+    dispatch(actions.server.checkOut(bookingRequest));
   };
 
   render() {
@@ -119,7 +146,7 @@ class CheckoutForm extends React.Component {
         >
           <Grid container alignItems="center" spacing={16}>
             {/* dob */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} md={4}>
               <Grid container alignItems="center">
                 <Grid item xs={4}>
                   <span style={{ fontWeight: "400", color: "#817a6b" }}>
@@ -141,7 +168,7 @@ class CheckoutForm extends React.Component {
               </Grid>
             </Grid>
             {/* gender */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} md={4}>
               <Grid container alignItems="center">
                 <Grid item xs={4}>
                   <span style={{ fontWeight: "400", color: "#817a6b" }}>
@@ -175,9 +202,9 @@ class CheckoutForm extends React.Component {
               </Grid>
             </Grid>
             {/* phone */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} md={4}>
               <Grid container alignItems="center">
-                <Grid item xs={8}>
+                <Grid item xs={7}>
                   <TextField
                     required
                     id="phoneNumber"
@@ -249,10 +276,20 @@ class CheckoutForm extends React.Component {
               />
             </Grid>
           </Grid>
-          <Grid container alignItems={"flex-start"} spacing={16}>
+          <h2 align="center" className={classes.title}>
+            Total money: {formatMoney(totalMoney)}
+          </h2>
+          <Grid
+            container
+            justify="center"
+            alignItems={"flex-start"}
+            spacing={8}
+          >
             {/* rooms */}
-            <Grid item xs={12} sm={6}>
-              <h2 align="center">Rooms</h2>
+            <Grid item xs={12} sm={7}>
+              <h2 className={classes.title} align="center">
+                Rooms
+              </h2>
               <div className={classes.cartItems}>
                 {cart.items.rooms.map((room, key) => (
                   <div
@@ -268,28 +305,29 @@ class CheckoutForm extends React.Component {
               </div>
             </Grid>
             {/* services */}
-            <Grid item xs={12} sm={6}>
-              <h2 align="center">Services</h2>
-              <div className={classes.cartItems}>
-                {cart.items.services.map((service, key) => (
-                  <div
-                    style={{
-                      backgroundColor: (key % 2 && "#eaeae1") || "#ccf2ff"
-                    }}
-                    className={classes.cartItem}
-                    key={key}
-                  >
-                    <CheckoutItem type="services" id={service.id} />
-                  </div>
-                ))}
-              </div>
-            </Grid>
+            {cart.items.services.length > 0 && (
+              <Grid item xs={12} sm={5}>
+                <h2 className={classes.title} align="center">
+                  Services
+                </h2>
+                <div className={classes.cartItems}>
+                  {cart.items.services.map((service, key) => (
+                    <div
+                      style={{
+                        backgroundColor: (key % 2 && "#eaeae1") || "#ccf2ff"
+                      }}
+                      className={classes.cartItem}
+                      key={key}
+                    >
+                      <CheckoutItem type="services" id={service.id} />
+                    </div>
+                  ))}
+                </div>
+              </Grid>
+            )}
           </Grid>
         </DialogContent>
         <DialogActions>
-          <h3 className={classes.title}>
-            Total money: {formatMoney(totalMoney)}
-          </h3>
           <Button
             size="large"
             variant={"contained"}
@@ -314,6 +352,7 @@ export default connect(() => {
     cart: getCart(state),
     dialogOpen: state.uiState.checkoutForm,
     totalMoney: getTotalMoney(state, props),
-    customerInfo: getCustomerInfo(state)
+    customerInfo: getCustomerInfo(state),
+    bookingFields: getBookingFields(state).fields
   });
 })(withStyles(styles)(CheckoutForm));

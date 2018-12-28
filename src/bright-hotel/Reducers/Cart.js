@@ -9,7 +9,8 @@ const type = (state = [], action) => {
         ...state,
         {
           id: action.payload.id,
-          count: 1
+          count: action.payload.count,
+          availableType: action.payload.availableType
         }
       ];
     case types.REMOVE_CART_ITEM:
@@ -41,15 +42,67 @@ const items = (
       return mergeObj(state, {
         [action.payload.type]: type(state[action.payload.type], action)
       });
+    case types.CLEAR_CART:
+      return mergeObj(state, { rooms: [], services: [] });
     default:
       return state;
   }
 };
 
-const info = (state = {}, action) => {
+const info = (
+  state = {
+    roomDetails: [],
+    at: ""
+  },
+  action
+) => {
   switch (action.type) {
+    case types.CLEAR_CART:
+      return mergeObj(state, { at: "", roomDetails: [] });
     case types.SET_CART_AT:
       return mergeObj(state, { at: action.payload.at });
+    case types.CALCULATE_REMAINING:
+      return mergeObj(state, {
+        remaining: action.payload
+      });
+    case types.ADD_ROOM_DETAIL:
+      return mergeObj(state, {
+        roomDetails: mergeObj(state.roomDetails, {
+          [action.payload.roomTypeId]: {
+            rooms: action.payload.details
+          }
+        })
+      });
+    case types.CHANGE_ROOM_DETAIL:
+      console.log(action);
+      return mergeObj(state, {
+        roomDetails: mergeObj(state.roomDetails, {
+          [action.payload.roomTypeId]: mergeObj({
+            rooms: mergeObj(
+              state.roomDetails[action.payload.roomTypeId].rooms,
+              {
+                [action.payload.id]: mergeObj(
+                  state.roomDetails[action.payload.roomTypeId].rooms[
+                    action.payload.id
+                  ],
+                  action.payload.change
+                )
+              }
+            )
+          })
+        })
+      });
+    case types.REMOVE_ROOM_DETAIL:
+      // eslint-disable-next-line no-case-declarations
+      let itemIdx = state.roomDetails.findIndex(
+        item => item.id === action.payload.id
+      );
+      return mergeObj(state, {
+        roomDetails: [
+          ...state.roomDetails.slice(0, itemIdx),
+          ...state.roomDetails.slice(itemIdx + 1)
+        ]
+      });
     default:
       return state;
   }

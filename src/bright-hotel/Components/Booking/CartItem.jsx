@@ -43,13 +43,13 @@ class CartItem extends React.Component {
           <Grid item xs={4}>
             <span>{item.name}</span>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={1}>
             <FormControl className={classes.formControl}>
               <Input
                 type={"number"}
                 value={count}
                 onChange={this.onNumChange(item.id, type)}
-                inputProps={{ min: "1", max: "10", step: "1" }}
+                inputProps={{ min: "1", max: "4", step: "1" }}
               />
             </FormControl>
           </Grid>
@@ -60,8 +60,10 @@ class CartItem extends React.Component {
               alignContent={"center"}
               alignItems={"center"}
             >
-              <Grid item>{formatMoney(item.price * count)}</Grid>
-              <Grid item>
+              <Grid item xs={8}>
+                {formatMoney(item.price * count)}
+              </Grid>
+              <Grid item xs={3}>
                 <IconButton
                   key="close"
                   aria-label="Close"
