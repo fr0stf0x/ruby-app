@@ -114,7 +114,18 @@ class CheckoutForm extends React.Component {
       bookingDetails,
       services: services.map(ser => ({ serviceId: ser.id, amount: ser.count }))
     };
-    dispatch(actions.server.checkOut(bookingRequest));
+    dispatch(actions.server.checkOut(bookingRequest))
+      .then(res => {
+        dispatch(actions.cart.clearCart());
+        dispatch(actions.ui.showSnackBar(res.message));
+        return res;
+      })
+      .catch(err => {
+        dispatch(actions.ui.showSnackBar("You have un-confirmed booking"));
+      })
+      .finally(() => {
+        dispatch(actions.ui.toggleProgress());
+      });
   };
 
   render() {

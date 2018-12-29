@@ -139,21 +139,9 @@ const makeCheckForRoomsAvailability = () => dispatch =>
   });
 
 const checkOut = bookingRequest => dispatch => {
-  console.log(bookingRequest);
   dispatch(toggleCheckoutForm());
   dispatch(toggleProgress());
-  postData(bookingRequest, END_POINTS.BOOKING)
-    .then(res => {
-      console.log(res);
-      dispatch(clearCart());
-      dispatch(showSnackBar(res.message));
-      return res;
-    })
-    .catch(err => {
-      dispatch(toggleCheckoutForm());
-      console.log(err.message);
-    })
-    .finally(() => dispatch(toggleProgress()));
+  return postData(bookingRequest, END_POINTS.BOOKING);
 };
 
 // cart

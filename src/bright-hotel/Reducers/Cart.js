@@ -74,7 +74,6 @@ const info = (
         })
       });
     case types.CHANGE_ROOM_DETAIL:
-      console.log(action);
       return mergeObj(state, {
         roomDetails: mergeObj(state.roomDetails, {
           [action.payload.roomTypeId]: mergeObj({
