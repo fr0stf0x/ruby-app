@@ -31,6 +31,10 @@ class App extends React.Component {
     }
   }
 
+  componentDidCatch(err, info) {
+    console.log(err, info);
+  }
+
   componentDidMount() {
     const phoneNumber = localStorage.getItem("phoneNumber");
     const { dispatch } = this.props;

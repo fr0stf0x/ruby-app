@@ -1,5 +1,5 @@
 export const API_URL = 'https://5bfd126b827c3800139ae8c7.mockapi.io/bright-hotel';
-export const API_URL_TYPES = 'https:/5ead8c5e4350860016e13856.mockapi.io/bright-hotel';
+export const API_URL_TYPES = 'https://5ead8c5e4350860016e13856.mockapi.io/bright-hotel';
 
 const ALL_ROOM_TYPES = "roomTypes";
 const CHECK_AVAILABLE = "availableRoomTypes";

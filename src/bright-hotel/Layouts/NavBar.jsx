@@ -63,7 +63,7 @@ const RightLinks = withStyles(headerLinksStyle)(({ ...props }) => {
               to=""
               className={classes.navLink}
               activeClass={classes.navLinkActive}
-              onClick={() => scrollTo("services")}
+              onClick={() => scrollTo("box")}
             >
               <SearchIcon />
               My bookings
