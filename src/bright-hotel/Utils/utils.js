@@ -1,7 +1,7 @@
 import axios from "axios";
 import { stringify } from "query-string";
 import { animateScroll as scroll, scroller } from "react-scroll";
-import { API_URL } from "./api";
+import { API_URL, mapAPIUrl } from "./api";
 
 export const formatMoney = money =>
   (money === 0 && "FREE") ||
@@ -48,7 +48,7 @@ export const fetchDataFromServer = (
   queryParams,
   options = { limit: 10 }
 ) => {
-  let url = `${API_URL}/${endpoint}?${stringify(queryParams)}&${stringify(
+  let url = `${mapAPIUrl(endpoint)}/${endpoint}?${stringify(queryParams)}&${stringify(
     options
   )}`;
   console.log(url);
